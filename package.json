@@ -1,28 +1,16 @@
 {
   "name": "inthepitts-discgolf-app",
   "version": "1.0.0",
+  "private": true,
   "type": "module",
-  "description": "",
-  "main": "index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "dev": "next dev",
+    "build": "next build",
+    "start": "next start"
   },
-  "repository": {
-    "type": "git",
-    "url": "git+https://github.com/chadhagerty/inthepitts-discgolf-app.git"
-  },
-  "keywords": [],
-  "author": "",
-  "license": "ISC",
-  "type": "commonjs",
-  "bugs": {
-    "url": "https://github.com/chadhagerty/inthepitts-discgolf-app/issues"
-  },
-  "homepage": "https://github.com/chadhagerty/inthepitts-discgolf-app#readme",
   "dependencies": {
-    "next": "^16.1.1",
-    "react": "^19.2.3",
-    "react-dom": "^19.2.3"
+    "next": "14.1.0",
+    "react": "^18.2.0",
+    "react-dom": "^18.2.0"
   }
-
 }
