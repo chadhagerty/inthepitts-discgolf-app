@@ -132,6 +132,81 @@ const holes = [
   },
 ];
 
+const MEMBERS = [
+  {
+    name: "Chad Hagerty",
+    type: "yearly",
+    expiresAt: "2026-01-01",
+  },
+];
+
+export function CheckIn() {
+  const [name, setName] = useState("");
+  const [status, setStatus] = useState(null);
+
+  const today = new Date();
+
+  function handleCheckIn() {
+    const member = MEMBERS.find(
+      (m) => m.name.toLowerCase() === name.toLowerCase()
+    );
+
+    if (!member) {
+      setStatus("not-member");
+      return;
+    }
+
+    const expires = new Date(member.expiresAt);
+
+    if (expires >= today) {
+      setStatus("checked-in");
+    } else {
+      setStatus("expired");
+    }
+  }
+
+  return (
+    <section style={{ padding: "2rem", borderTop: "1px solid #ccc" }}>
+      <h2>Course Check-In</h2>
+
+      <input
+        type="text"
+        placeholder="Enter your name"
+        value={name}
+        onChange={(e) => setName(e.target.value)}
+        style={{ padding: "0.5rem", width: "100%", maxWidth: "300px" }}
+      />
+
+      <br /><br />
+
+      <button onClick={handleCheckIn}>Check In</button>
+
+      {status === "checked-in" && (
+        <p style={{ color: "green" }}>
+          ✅ Welcome back! You’re checked in.
+        </p>
+      )}
+
+      {status === "expired" && (
+        <p style={{ color: "red" }}>
+          ❌ Membership expired. Please renew.
+        </p>
+      )}
+
+      {status === "not-member" && (
+        <div style={{ marginTop: "1rem" }}>
+          <p>Day Pass: $10</p>
+          <p>Yearly Membership: $100</p>
+          <p>
+            Pay by e-transfer:<br />
+            <strong>inthepittsdiscgolf@gmail.com</strong>
+          </p>
+        </div>
+      )}
+    </section>
+  );
+}
+
 export default function Home() {
   const [tee, setTee] = useState("red");
 
@@ -152,6 +227,7 @@ export default function Home() {
           </button>
         </div>
       </section>
+      <CheckIn />
 
       {/* HOLES */}
       <section style={{ maxWidth: "900px", margin: "0 auto", padding: "1rem" }}>
