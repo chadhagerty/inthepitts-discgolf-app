@@ -2,6 +2,12 @@
 
 import { useState } from "react";
 import Image from "next/image";
+<button
+  onClick={() => setShowHoles(true)}
+  style={{ margin: "1.5rem 0" }}
+>
+  View Course Layout
+</button>
 
 const holes = [
   {
@@ -209,12 +215,19 @@ export function CheckIn() {
 
 export default function Home() {
   const [tee, setTee] = useState("red");
+  const [showHoles, setShowHoles] = useState(false);
 
   return (
     <main>
       {/* HERO */}
       <section style={{ textAlign: "center", padding: "3rem 1rem" }}>
-        <Image src="/logo.png" alt="In The Pitts Disc Golf" width={140} height={140} />
+        <Image
+          src="/logo.png"
+          alt="In The Pitts Disc Golf"
+          width={140}
+          height={140}
+        />
+
         <h1>In The Pitts Disc Golf Course</h1>
         <p>Choose your tee to view hole info</p>
 
@@ -226,21 +239,33 @@ export default function Home() {
             Blue Tees
           </button>
         </div>
+
+        {/* SHOW COURSE BUTTON */}
+        <div style={{ marginTop: "1.5rem" }}>
+          <button onClick={() => setShowHoles(true)}>
+            View Course Layout
+          </button>
+        </div>
       </section>
+
       <CheckIn />
 
-      {/* HOLES */}
-      <section style={{ maxWidth: "900px", margin: "0 auto", padding: "1rem" }}>
-        {holes.map((h) => (
-          <div key={h.hole} style={{ marginBottom: "1.5rem" }}>
-            <h3>Hole {h.hole}</h3>
-            <strong>
-              Par {h.par[tee]} — {h.distance[tee]}
-            </strong>
-            <p>{h.description}</p>
-          </div>
-        ))}
-      </section>
+      {/* HOLES (HIDDEN UNTIL BUTTON CLICK) */}
+      {showHoles && (
+        <section
+          style={{ maxWidth: "900px", margin: "0 auto", padding: "1rem" }}
+        >
+          {holes.map((h) => (
+            <div key={h.hole} style={{ marginBottom: "1.5rem" }}>
+              <h3>Hole {h.hole}</h3>
+              <strong>
+                Par {h.par[tee]} — {h.distance[tee]}
+              </strong>
+              <p>{h.description}</p>
+            </div>
+          ))}
+        </section>
+      )}
     </main>
   );
 }
