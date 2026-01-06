@@ -1,76 +1,172 @@
+"use client";
+
+import { useState } from "react";
 import Image from "next/image";
 
+const holes = [
+  {
+    hole: 1,
+    par: { red: 3, blue: 3 },
+    distance: { red: "186 ft", blue: "261 ft" },
+    description:
+      "Open shot with a slight dogleg right from the top of a hill. Hazard at the bottom left of the hill.",
+  },
+  {
+    hole: 2,
+    par: { red: 3, blue: 3 },
+    distance: { red: "169 ft", blue: "169 ft" },
+    description:
+      "Tight wooded fairway with a slight left fade at the end.",
+  },
+  {
+    hole: 3,
+    par: { red: 3, blue: 3 },
+    distance: { red: "147 ft", blue: "147 ft" },
+    description:
+      "Wooded hole requiring a forehand or backhand turnover. OB left over the brush wall and OB right into the sand pit.",
+  },
+  {
+    hole: 4,
+    par: { red: 3, blue: 3 },
+    distance: { red: "148 ft", blue: "190 ft" },
+    description:
+      "Tight wooded hole. Forehand or flex shot to a basket on top of a hill.",
+  },
+  {
+    hole: 5,
+    par: { red: 4, blue: 3 },
+    distance: { red: "296 ft", blue: "296 ft" },
+    description:
+      "Stock flex backhand over the pine with a right fade.",
+  },
+  {
+    hole: 6,
+    par: { red: 4, blue: 4 },
+    distance: { red: "343 ft", blue: "343 ft" },
+    description:
+      "Out-of-the-tunnel bomber. Narrow fairway with the basket behind two spruce trees.",
+  },
+  {
+    hole: 7,
+    par: { red: 3, blue: 3 },
+    distance: { red: "264 ft", blue: "264 ft" },
+    description:
+      "Horseshoe-shaped fairway. Forehander’s dream or bold backhand turnover.",
+  },
+  {
+    hole: 8,
+    par: { red: 3, blue: 3 },
+    distance: { red: "108 ft", blue: "215 ft" },
+    description:
+      "Tunnel shot with a consistent left fade. Basket tucked behind a pine tree.",
+  },
+  {
+    hole: 9,
+    par: { red: 3, blue: 3 },
+    distance: { red: "202 ft", blue: "202 ft" },
+    description:
+      "Tight wooded fairway. Flex shot or backhand turnover. OB left over the fence.",
+  },
+  {
+    hole: 10,
+    par: { red: 4, blue: 3 },
+    distance: { red: "175 ft", blue: "175 ft" },
+    description:
+      "Sharp 90-degree turn about 75 ft off the tee. Hanging basket.",
+  },
+  {
+    hole: 11,
+    par: { red: 3, blue: 3 },
+    distance: { red: "136 ft", blue: "136 ft" },
+    description:
+      "Island hole. Clear the stream or play your next shot from the tee.",
+  },
+  {
+    hole: 12,
+    par: { red: 4, blue: 4 },
+    distance: { red: "334 ft", blue: "402 ft" },
+    description:
+      "Left-fading shot with elevation through a narrow fairway.",
+  },
+  {
+    hole: 13,
+    par: { red: 4, blue: 3 },
+    distance: { red: "377 ft", blue: "377 ft" },
+    description:
+      "Bomb shot with a slight left fade.",
+  },
+  {
+    hole: 14,
+    par: { red: 4, blue: 4 },
+    distance: { red: "564 ft", blue: "564 ft" },
+    description:
+      "Downhill full-send with a slightly tucked basket.",
+  },
+  {
+    hole: 15,
+    par: { red: 4, blue: 4 },
+    distance: { red: "368 ft", blue: "485 ft" },
+    description:
+      "Straight shot with thick rough on the left.",
+  },
+  {
+    hole: 16,
+    par: { red: 3, blue: 3 },
+    distance: { red: "371 ft", blue: "371 ft" },
+    description:
+      "Stock backhand with a slightly buried basket.",
+  },
+  {
+    hole: 17,
+    par: { red: 3, blue: 3 },
+    distance: { red: "288 ft", blue: "288 ft" },
+    description:
+      "Straight shot to a basket on a slanted hill.",
+  },
+  {
+    hole: 18,
+    par: { red: 5, blue: 5 },
+    distance: { red: "581 ft", blue: "581 ft" },
+    description:
+      "Long, mostly tight wooded hole requiring one to two layup shots.",
+  },
+];
+
 export default function Home() {
+  const [tee, setTee] = useState("red");
+
   return (
     <main>
-      {/* HERO SECTION */}
-      <section
-        style={{
-          background: "linear-gradient(135deg, #1f2933, #0b3d2e)",
-          color: "white",
-          padding: "4rem 1.5rem",
-          textAlign: "center",
-        }}
-      >
-        <div style={{ maxWidth: "900px", margin: "0 auto" }}>
-          <Image
-            src="/logo.png"
-            alt="In The Pitts Disc Golf"
-            width={160}
-            height={160}
-            style={{ margin: "0 auto 1.5rem auto" }}
-            priority
-          />
+      {/* HERO */}
+      <section style={{ textAlign: "center", padding: "3rem 1rem" }}>
+        <Image src="/logo.png" alt="In The Pitts Disc Golf" width={140} height={140} />
+        <h1>In The Pitts Disc Golf Course</h1>
+        <p>Choose your tee to view hole info</p>
 
-          <h1 style={{ fontSize: "2.5rem", marginBottom: "1rem" }}>
-            In The Pitts Disc Golf Course
-          </h1>
-
-          <p style={{ fontSize: "1.15rem", lineHeight: "1.6" }}>
-            A well-rounded 18-hole disc golf experience featuring tight wooded
-            challenges, wide-open distance shots, and a fun atmosphere filled
-            with wildlife — including a friendly donkey midway through your
-            round.
-          </p>
+        <div style={{ marginTop: "1rem" }}>
+          <button onClick={() => setTee("red")} disabled={tee === "red"}>
+            Red Tees
+          </button>{" "}
+          <button onClick={() => setTee("blue")} disabled={tee === "blue"}>
+            Blue Tees
+          </button>
         </div>
       </section>
 
-      {/* CONTENT SECTION */}
-      <section
-        style={{
-          padding: "2.5rem 1.5rem",
-          maxWidth: "900px",
-          margin: "0 auto",
-        }}
-      >
-        <p style={{ fontSize: "1.1rem", lineHeight: "1.7" }}>
-          Scan the QR codes located throughout the course to watch drone videos
-          showcasing hole layouts and flight paths.
-        </p>
+      {/* HOLES */}
+      <section style={{ maxWidth: "900px", margin: "0 auto", padding: "1rem" }}>
+        {holes.map((h) => (
+          <div key={h.hole} style={{ marginBottom: "1.5rem" }}>
+            <h3>Hole {h.hole}</h3>
+            <strong>
+              Par {h.par[tee]} — {h.distance[tee]}
+            </strong>
+            <p>{h.description}</p>
+          </div>
+        ))}
       </section>
     </main>
   );
 }
-      {/* COURSE INFO SECTION */}
-      <section
-        style={{
-          padding: "2.5rem 1.5rem",
-          maxWidth: "900px",
-          margin: "0 auto",
-          borderTop: "1px solid #e5e7eb",
-        }}
-      >
-        <h2 style={{ fontSize: "1.75rem", marginBottom: "1rem" }}>
-          Course Information
-        </h2>
 
-        <ul style={{ fontSize: "1.05rem", lineHeight: "1.8", paddingLeft: "1.2rem" }}>
-          <li><strong>Holes:</strong> 18</li>
-          <li><strong>Terrain:</strong> Mixed wooded and open fairways</li>
-          <li><strong>Skill Level:</strong> Beginner friendly with advanced challenges</li>
-          <li><strong>Distances:</strong> Short technical shots to long-distance drives</li>
-          <li><strong>Atmosphere:</strong> Relaxed, fun, and family-friendly</li>
-          <li><strong>Wildlife:</strong> Deer, birds, and a friendly donkey midway through the course</li>
-        </ul>
-      </section>
 
