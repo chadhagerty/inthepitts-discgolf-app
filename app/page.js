@@ -51,4 +51,26 @@ export default function Home() {
     </main>
   );
 }
+      {/* COURSE INFO SECTION */}
+      <section
+        style={{
+          padding: "2.5rem 1.5rem",
+          maxWidth: "900px",
+          margin: "0 auto",
+          borderTop: "1px solid #e5e7eb",
+        }}
+      >
+        <h2 style={{ fontSize: "1.75rem", marginBottom: "1rem" }}>
+          Course Information
+        </h2>
+
+        <ul style={{ fontSize: "1.05rem", lineHeight: "1.8", paddingLeft: "1.2rem" }}>
+          <li><strong>Holes:</strong> 18</li>
+          <li><strong>Terrain:</strong> Mixed wooded and open fairways</li>
+          <li><strong>Skill Level:</strong> Beginner friendly with advanced challenges</li>
+          <li><strong>Distances:</strong> Short technical shots to long-distance drives</li>
+          <li><strong>Atmosphere:</strong> Relaxed, fun, and family-friendly</li>
+          <li><strong>Wildlife:</strong> Deer, birds, and a friendly donkey midway through the course</li>
+        </ul>
+      </section>
 
