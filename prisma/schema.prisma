@@ -1,0 +1,25 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+}
+
+model Member {
+  id          String   @id @default(uuid())
+  name        String
+  email       String?
+  membership  String   // "day" | "yearly"
+  expiresAt   DateTime
+  createdAt   DateTime @default(now())
+  checkIns    CheckIn[]
+}
+
+model CheckIn {
+  id        String   @id @default(uuid())
+  memberId  String?
+  member    Member?  @relation(fields: [memberId], references: [id])
+  createdAt DateTime @default(now())
+  source    String   // "manual" | "qr"
+}
