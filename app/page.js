@@ -1,3 +1,4 @@
+
 "use client";
 
 import Image from "next/image";
@@ -7,26 +8,30 @@ import { useState } from "react";
 function CheckIn() {
   const [name, setName] = useState("");
   const [loading, setLoading] = useState(false);
-  const [result, setResult] = useState(null);
+  const [result, setResult] = useState(null); // { ok, status, member?, error? }
 
   async function handleCheckIn() {
-    const trimmed = name.trim();
-    if (!trimmed) return;
-
     setLoading(true);
     setResult(null);
 
     try {
-      const res = await fetch("/api/checkin", {
+      const res = await fetch("/api/check-in", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ name: trimmed, source: "manual" }),
+        body: JSON.stringify({ name }),
       });
 
-      const data = await res.json();
-      setResult({ ok: res.ok, ...data });
-    } catch {
-      setResult({ ok: false, status: "error" });
+      const data = await res.json().catch(() => ({}));
+
+      if (!res.ok) {
+        setResult({ ok: false, status: "error", error: data?.error || "server-error" });
+        return;
+      }
+
+      setResult(data); // expected: { ok:true, status:"checked-in"|"expired"|"not-member", member? }
+    } catch (err) {
+      console.error("CHECK-IN CLIENT ERROR:", err);
+      setResult({ ok: false, status: "error", error: "network-error" });
     } finally {
       setLoading(false);
     }
@@ -43,19 +48,20 @@ function CheckIn() {
         style={{ padding: "0.5rem", maxWidth: "320px", width: "100%" }}
       />
 
-      <br /><br />
+      <br />
+      <br />
 
-      <button onClick={handleCheckIn} disabled={loading}>
+      <button onClick={handleCheckIn} disabled={loading || !name.trim()}>
         {loading ? "Checking..." : "Check In"}
       </button>
 
-      {result?.status === "checked-in" && (
+      {result?.ok && result?.status === "checked-in" && (
         <p style={{ color: "green", marginTop: "1rem" }}>
-          ✅ Welcome back, {result.member?.name}! You’re checked in.
+          ✅ Welcome back{result?.member?.name ? `, ${result.member.name}` : ""}! You’re checked in.
         </p>
       )}
 
-      {result?.status === "expired" && (
+      {result?.ok && result?.status === "expired" && (
         <div style={{ marginTop: "1rem" }}>
           <p style={{ color: "red" }}>❌ Membership expired. Please renew.</p>
           <p>Yearly Membership: <strong>$100</strong></p>
@@ -63,7 +69,7 @@ function CheckIn() {
         </div>
       )}
 
-      {result?.status === "not-member" && (
+      {result?.ok && result?.status === "not-member" && (
         <div style={{ marginTop: "1rem" }}>
           <p>Not on the member list yet.</p>
           <p>Day Pass: <strong>$10</strong></p>
@@ -74,14 +80,14 @@ function CheckIn() {
 
       {result?.status === "error" && (
         <p style={{ color: "red", marginTop: "1rem" }}>
-          ❌ Something went wrong. Try again.
+          ❌ Something went wrong. ({result?.error || "error"})
         </p>
       )}
     </section>
   );
 }
 
-export default function Home() {
+export default function Page() {
   return (
     <main>
       <section style={{ textAlign: "center", padding: "3rem 1rem" }}>
@@ -105,4 +111,3 @@ export default function Home() {
     </main>
   );
 }
-
