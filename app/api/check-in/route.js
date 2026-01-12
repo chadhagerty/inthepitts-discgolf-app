@@ -1,18 +1,17 @@
-export const runtime = "nodejs";
-
 import { NextResponse } from "next/server";
-import prisma from "../../../lib/prisma";
+import { getPrisma } from "../../../lib/prisma.js";
+
+export const runtime = "nodejs";
 
 export async function POST(req) {
   try {
+    const prisma = getPrisma();
+
     const body = await req.json();
     const name = (body?.name || "").trim();
 
     if (!name) {
-      return NextResponse.json(
-        { ok: false, error: "Name is required." },
-        { status: 400 }
-      );
+      return NextResponse.json({ ok: false, error: "Name is required." }, { status: 400 });
     }
 
     const member = await prisma.member.findFirst({
@@ -20,36 +19,21 @@ export async function POST(req) {
     });
 
     if (!member) {
-      return NextResponse.json(
-        { ok: false, error: "not-member" },
-        { status: 404 }
-      );
+      return NextResponse.json({ ok: false, status: "not-member" }, { status: 404 });
     }
 
-    const expiresAt = member.expiresAt ? new Date(member.expiresAt) : null;
-    const now = new Date();
-
-    if (expiresAt && expiresAt < now) {
-      return NextResponse.json(
-        { ok: false, error: "expired" },
-        { status: 403 }
-      );
+    if (new Date(member.expiresAt) < new Date()) {
+      return NextResponse.json({ ok: false, status: "expired" }, { status: 403 });
     }
 
-    // record a check-in
     await prisma.checkIn.create({
-      data: {
-        memberId: member.id,
-        source: "manual",
-      },
+      data: { memberId: member.id, source: "manual" },
     });
 
-    return NextResponse.json({ ok: true, status: "checked-in" });
-  } catch (e) {
-    console.error("CHECK-IN ERROR:", e);
-    return NextResponse.json(
-      { ok: false, error: "server-error" },
-      { status: 500 }
-    );
+    return NextResponse.json({ ok: true, status: "checked-in", member: { name: member.name } });
+  } catch (err) {
+    console.error("CHECK-IN ERROR:", err);
+    return NextResponse.json({ ok: false, error: "server-error" }, { status: 500 });
   }
 }
+
