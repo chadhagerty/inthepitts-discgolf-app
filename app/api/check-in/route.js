@@ -2,6 +2,7 @@ import { NextResponse } from "next/server";
 import { getPrisma } from "../../../lib/prisma.js";
 
 export const runtime = "nodejs";
+export const dynamic = "force-dynamic";
 
 export async function POST(req) {
   try {
