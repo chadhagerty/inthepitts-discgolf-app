@@ -1,27 +1,25 @@
-export const dynamic = "force-dynamic";
-export const runtime = "nodejs";
-
 import { NextResponse } from "next/server";
-import { getPrisma } from "@/lib/prisma";
 
-export async function POST(request) {
+export const runtime = "nodejs";
+export const dynamic = "force-dynamic";
+
+export async function POST(req) {
+  const { getPrisma } = await import("../../../lib/prisma.js");
+
   try {
-    const prisma = getPrisma();
-
-    const body = await request.json();
+    const prisma = await getPrisma();
+    const body = await req.json();
     const name = (body?.name || "").trim();
 
     if (!name) {
       return NextResponse.json(
-        { ok: false, error: "Name is required" },
+        { ok: false, error: "Name required" },
         { status: 400 }
       );
     }
 
     const member = await prisma.member.findFirst({
-      where: {
-        name: { equals: name, mode: "insensitive" },
-      },
+      where: { name: { equals: name, mode: "insensitive" } },
     });
 
     if (!member) {
@@ -31,16 +29,9 @@ export async function POST(request) {
       );
     }
 
-    if (new Date(member.expiresAt) < new Date()) {
-      return NextResponse.json(
-        { ok: false, status: "expired" },
-        { status: 403 }
-      );
-    }
-
-    return NextResponse.json({ ok: true, status: "checked-in" });
+    return NextResponse.json({ ok: true });
   } catch (err) {
-    console.error("Check-in error:", err);
+    console.error(err);
     return NextResponse.json(
       { ok: false, error: "Server error" },
       { status: 500 }
