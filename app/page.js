@@ -7,28 +7,32 @@ export default function Home() {
   const [status, setStatus] = useState(null);
   const [loading, setLoading] = useState(false);
 
-async function handleCheckIn() {
-  setLoading(true);
-  setResult(null);
+  async function handleCheckIn() {
+    setLoading(true);
+    setStatus(null);
 
-  try {
-    const res = await fetch("/api/check-in", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ name }),
-    });
+    try {
+      const res = await fetch("/api/check-in", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ name }),
+      });
 
-    const data = await res.json();
-    setResult(data);
-  } catch (err) {
-    console.error(err);
-    setResult({ ok: false, status: "error" });
-  } finally {
-    setLoading(false);
+      const data = await res.json();
+
+      if (!res.ok) {
+        setStatus(data.status || "error");
+        return;
+      }
+
+      setStatus(data.status);
+    } catch (err) {
+      console.error(err);
+      setStatus("error");
+    } finally {
+      setLoading(false);
+    }
   }
-}
-
-
 
   return (
     <main style={{ padding: "2rem", maxWidth: 500, margin: "0 auto" }}>
@@ -48,12 +52,6 @@ async function handleCheckIn() {
       >
         {loading ? "Checking in..." : "Check In"}
       </button>
-      {result?.ok === true && (
-  <p style={{ color: "green", marginTop: "1rem" }}>
-    ✅ You are checked in.
-  </p>
-)}
-
 
       {status === "checked-in" && (
         <p style={{ color: "green", marginTop: "1rem" }}>
