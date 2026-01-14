@@ -50,7 +50,7 @@ function CheckIn() {
       <br />
       <br />
 
-      <button onClick={handleCheckIn} disabled={loading || !name.trim()}>
+      <button onClick={handleCheckIn} disabled={loading}>
         {loading ? "Checking..." : "Check In"}
       </button>
 
@@ -60,7 +60,7 @@ function CheckIn() {
         </p>
       )}
 
-      {result?.ok && result?.status === "expired" && (
+      {result?.status === "expired" && (
         <div style={{ marginTop: "1rem" }}>
           <p style={{ color: "red" }}>❌ Membership expired. Please renew.</p>
           <p>
@@ -72,7 +72,7 @@ function CheckIn() {
         </div>
       )}
 
-      {result?.ok && result?.status === "not-member" && (
+      {result?.status === "not-member" && (
         <div style={{ marginTop: "1rem" }}>
           <p>Not on the member list yet.</p>
           <p>
