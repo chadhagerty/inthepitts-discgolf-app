@@ -38,10 +38,13 @@ export async function POST(req) {
       },
     });
 
-    return NextResponse.json(
-      { ok: true, status: "checked-in", member: { name: member.name } },
-      { status: 200 }
-    );
+  return NextResponse.json({
+  ok: true,
+  status: "checked-in",
+  member,
+});
+
+
   } catch (err) {
     console.error("CHECK-IN ERROR:", err);
     return NextResponse.json({ ok: false, status: "error" }, { status: 500 });
