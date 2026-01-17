@@ -8,7 +8,6 @@ export default function AdminCheckinsPage() {
   const [loading, setLoading] = useState(false);
 
   useEffect(() => {
-    // convenience: remember the key on this device (optional)
     const saved = localStorage.getItem("ADMIN_KEY") || "";
     if (saved) setKey(saved);
   }, []);
@@ -19,11 +18,12 @@ export default function AdminCheckinsPage() {
 
     try {
       const res = await fetch("/api/checkins", {
-        headers: { Authorization: key }, // IMPORTANT: no "Bearer " here
+        headers: { Authorization: `Bearer ${key}` }, // <-- THIS is the fix
       });
 
       const json = await res.json().catch(() => ({}));
       setData(json);
+
       localStorage.setItem("ADMIN_KEY", key);
     } catch (e) {
       setData({ ok: false, error: "network-error" });
@@ -40,12 +40,14 @@ export default function AdminCheckinsPage() {
         <label style={{ display: "block", marginBottom: 6 }}>
           Admin Key (paste exactly)
         </label>
+
         <input
           value={key}
           onChange={(e) => setKey(e.target.value)}
           placeholder="chad-super-secret-2026-01"
           style={{ padding: "0.5rem", width: "100%", maxWidth: 420 }}
         />
+
         <div style={{ marginTop: 10 }}>
           <button onClick={load} disabled={loading || !key.trim()}>
             {loading ? "Loading..." : "Load check-ins"}
