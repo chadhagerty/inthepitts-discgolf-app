@@ -4,7 +4,7 @@ import { useEffect, useState } from "react";
 
 export default function AdminCheckinsPage() {
   const [key, setKey] = useState("");
-  const [data, setData] = useState(null); // { ok, count, checkIns } or { ok:false, error }
+  const [data, setData] = useState(null);
   const [loading, setLoading] = useState(false);
 
   useEffect(() => {
@@ -18,12 +18,11 @@ export default function AdminCheckinsPage() {
 
     try {
       const res = await fetch("/api/checkins", {
-        headers: { Authorization: `Bearer ${key}` }, // <-- THIS is the fix
+        headers: { Authorization: `Bearer ${key}` }, // ✅ production expects Bearer
       });
 
       const json = await res.json().catch(() => ({}));
       setData(json);
-
       localStorage.setItem("ADMIN_KEY", key);
     } catch (e) {
       setData({ ok: false, error: "network-error" });
@@ -40,14 +39,12 @@ export default function AdminCheckinsPage() {
         <label style={{ display: "block", marginBottom: 6 }}>
           Admin Key (paste exactly)
         </label>
-
         <input
           value={key}
           onChange={(e) => setKey(e.target.value)}
           placeholder="chad-super-secret-2026-01"
           style={{ padding: "0.5rem", width: "100%", maxWidth: 420 }}
         />
-
         <div style={{ marginTop: 10 }}>
           <button onClick={load} disabled={loading || !key.trim()}>
             {loading ? "Loading..." : "Load check-ins"}
