@@ -50,20 +50,15 @@ export async function POST(req) {
     const body = await req.json().catch(() => ({}));
 
     const name = String(body?.name || "").trim();
-    const membership = String(body?.membership || "yearly").trim();
-
     if (!name) {
       return NextResponse.json({ ok: false, error: "name-required" }, { status: 400 });
     }
 
-    // expiresAt optional. If missing, default = 1 year from now.
-    let expiresAt;
-    if (body?.expiresAt) {
-      expiresAt = new Date(body.expiresAt);
-      if (Number.isNaN(expiresAt.getTime())) {
-        return NextResponse.json({ ok: false, error: "invalid-expiresAt" }, { status: 400 });
-      }
-    } else {
+    // membership is REQUIRED in your schema
+    const membership = String(body?.membership || "yearly").trim() || "yearly";
+
+    let expiresAt = body?.expiresAt ? new Date(body.expiresAt) : null;
+    if (!expiresAt || Number.isNaN(expiresAt.getTime())) {
       expiresAt = new Date();
       expiresAt.setFullYear(expiresAt.getFullYear() + 1);
     }
@@ -76,7 +71,10 @@ export async function POST(req) {
     return NextResponse.json({ ok: true, member });
   } catch (err) {
     console.error("MEMBERS POST ERROR:", err);
-    return NextResponse.json({ ok: false, error: "error" }, { status: 500 });
+    return NextResponse.json(
+      { ok: false, error: "error", details: err?.message || String(err) },
+      { status: 500 }
+    );
   }
 }
 
@@ -87,7 +85,6 @@ export async function DELETE(req) {
   try {
     const prisma = getPrisma();
 
-    // accept either ?id=... or JSON body { id }
     const url = new URL(req.url);
     let id = url.searchParams.get("id");
 
@@ -101,8 +98,8 @@ export async function DELETE(req) {
       return NextResponse.json({ ok: false, error: "id-required" }, { status: 400 });
     }
 
-    // optional: prevent deleting your own seed member if you want — leaving allowed for now.
-
+    // If there are check-ins referencing this member, delete those first
+    await prisma.checkIn.deleteMany({ where: { memberId: id } });
     await prisma.member.delete({ where: { id } });
 
     return NextResponse.json({ ok: true });

@@ -8,9 +8,9 @@ export default function AdminMembersPage() {
   const [data, setData] = useState(null); // { ok, count, members } or { ok:false, error }
   const [loading, setLoading] = useState(false);
 
-  const [newName, setNewName] = useState("");
-  const [newMembership, setNewMembership] = useState("yearly");
-  const [newExpiresAt, setNewExpiresAt] = useState(""); // optional ISO string
+  const [name, setName] = useState("");
+  const [membership, setMembership] = useState("yearly");
+  const [expiresAt, setExpiresAt] = useState(""); // YYYY-MM-DD
 
   useEffect(() => {
     const saved = localStorage.getItem("ADMIN_KEY") || "";
@@ -37,18 +37,20 @@ export default function AdminMembersPage() {
   }
 
   async function addMember() {
-    if (!newName.trim()) return;
+    if (!name.trim()) return;
 
     setLoading(true);
 
     try {
       const payload = {
-        name: newName.trim(),
-        membership: newMembership,
+        name: name.trim(),
+        membership: String(membership || "yearly"),
       };
 
-      if (newExpiresAt.trim()) {
-        payload.expiresAt = newExpiresAt.trim();
+      // optional
+      if (expiresAt.trim()) {
+        // API accepts Date parseable string
+        payload.expiresAt = `${expiresAt.trim()}T00:00:00.000Z`;
       }
 
       const res = await fetch("/api/members", {
@@ -67,9 +69,9 @@ export default function AdminMembersPage() {
         return;
       }
 
-      setNewName("");
-      setNewMembership("yearly");
-      setNewExpiresAt("");
+      setName("");
+      setExpiresAt("");
+      setMembership("yearly");
       await load();
     } catch {
       setData({ ok: false, error: "network-error" });
@@ -79,7 +81,7 @@ export default function AdminMembersPage() {
   }
 
   async function deleteMember(id) {
-    if (!confirm("Delete this member?")) return;
+    if (!confirm("Delete this member? (This also deletes their check-ins)")) return;
 
     setLoading(true);
 
@@ -105,7 +107,7 @@ export default function AdminMembersPage() {
   }
 
   return (
-    <main style={{ padding: "2rem", maxWidth: 900, margin: "0 auto" }}>
+    <main style={{ padding: "2rem", maxWidth: 1000, margin: "0 auto" }}>
       <h1>Admin: Members</h1>
 
       <div style={{ marginTop: 10, display: "flex", gap: 12, flexWrap: "wrap" }}>
@@ -127,7 +129,7 @@ export default function AdminMembersPage() {
           placeholder="chad-super-secret-2026-01"
           style={{ padding: "0.5rem", width: "100%", maxWidth: 420 }}
         />
-        <div style={{ marginTop: 10, display: "flex", gap: 10, flexWrap: "wrap" }}>
+        <div style={{ marginTop: 10 }}>
           <button onClick={load} disabled={loading || !key.trim()}>
             {loading ? "Loading..." : "Load members"}
           </button>
@@ -139,38 +141,34 @@ export default function AdminMembersPage() {
       <h2 style={{ marginBottom: 8 }}>Add member</h2>
       <div style={{ display: "grid", gap: 10, maxWidth: 520 }}>
         <input
-          value={newName}
-          onChange={(e) => setNewName(e.target.value)}
-          placeholder="Full name"
-          style={{ padding: "0.5rem" }}
+          value={name}
+          onChange={(e) => setName(e.target.value)}
+          placeholder="Member name"
+          style={{ padding: "0.5rem", width: "100%" }}
         />
 
         <select
-          value={newMembership}
-          onChange={(e) => setNewMembership(e.target.value)}
-          style={{ padding: "0.5rem" }}
+          value={membership}
+          onChange={(e) => setMembership(e.target.value)}
+          style={{ padding: "0.5rem", width: "100%" }}
         >
           <option value="yearly">yearly</option>
           <option value="daypass">daypass</option>
         </select>
 
         <input
-          value={newExpiresAt}
-          onChange={(e) => setNewExpiresAt(e.target.value)}
-          placeholder='ExpiresAt (optional ISO) e.g. 2027-01-01T00:00:00.000Z'
-          style={{ padding: "0.5rem" }}
+          value={expiresAt}
+          onChange={(e) => setExpiresAt(e.target.value)}
+          placeholder="Expires (YYYY-MM-DD) — optional"
+          style={{ padding: "0.5rem", width: "100%" }}
         />
 
         <button
           onClick={addMember}
-          disabled={loading || !key.trim() || !newName.trim()}
+          disabled={loading || !key.trim() || !name.trim()}
         >
           {loading ? "Working..." : "Add member"}
         </button>
-
-        <p style={{ opacity: 0.8, margin: 0 }}>
-          Leave expires blank to default to 1 year from today.
-        </p>
       </div>
 
       {data?.ok === false && (
@@ -195,15 +193,20 @@ export default function AdminMembersPage() {
                   padding: 12,
                   display: "flex",
                   justifyContent: "space-between",
-                  gap: 12,
                   alignItems: "center",
+                  gap: 12,
                 }}
               >
                 <div>
-                  <div style={{ fontWeight: 600 }}>{m.name}</div>
-                  <div style={{ opacity: 0.8, fontSize: 14 }}>
-                    {m.membership || "—"} • expires{" "}
-                    {m.expiresAt ? new Date(m.expiresAt).toLocaleDateString() : "—"}
+                  <div style={{ fontWeight: 700 }}>{m.name}</div>
+                  <div style={{ opacity: 0.85, fontSize: 14 }}>
+                    Membership: <strong>{m.membership || "yearly"}</strong>
+                  </div>
+                  <div style={{ opacity: 0.85, fontSize: 14 }}>
+                    Expires:{" "}
+                    <strong>
+                      {m.expiresAt ? new Date(m.expiresAt).toLocaleDateString() : "—"}
+                    </strong>
                   </div>
                 </div>
 
