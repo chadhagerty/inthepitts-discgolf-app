@@ -1,10 +1,11 @@
 "use client";
 
 import { useEffect, useState } from "react";
+import Link from "next/link";
 
 export default function AdminCheckinsPage() {
   const [key, setKey] = useState("");
-  const [data, setData] = useState(null);
+  const [data, setData] = useState(null); // { ok, count, checkIns } or { ok:false, error }
   const [loading, setLoading] = useState(false);
 
   useEffect(() => {
@@ -18,7 +19,7 @@ export default function AdminCheckinsPage() {
 
     try {
       const res = await fetch("/api/checkins", {
-        headers: { Authorization: `Bearer ${key}` }, // ✅ production expects Bearer
+        headers: { Authorization: `Bearer ${key}` },
       });
 
       const json = await res.json().catch(() => ({}));
@@ -34,6 +35,19 @@ export default function AdminCheckinsPage() {
   return (
     <main style={{ padding: "2rem", maxWidth: 900, margin: "0 auto" }}>
       <h1>Admin: Check-ins</h1>
+
+      {/* NAV LINKS */}
+      <div style={{ marginTop: 10, display: "flex", gap: 12, flexWrap: "wrap" }}>
+        <Link href="/admin" style={{ textDecoration: "underline" }}>
+          Admin Home
+        </Link>
+        <Link href="/admin/members" style={{ textDecoration: "underline" }}>
+          Members
+        </Link>
+        <Link href="/" style={{ textDecoration: "underline" }}>
+          Home
+        </Link>
+      </div>
 
       <div style={{ marginTop: "1rem" }}>
         <label style={{ display: "block", marginBottom: 6 }}>
@@ -92,3 +106,4 @@ export default function AdminCheckinsPage() {
     </main>
   );
 }
+
