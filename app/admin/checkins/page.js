@@ -37,17 +37,15 @@ export default function AdminCheckinsPage() {
       <h1>Admin: Check-ins</h1>
 
       {/* NAV LINKS */}
-      <div style={{ marginTop: 10, display: "flex", gap: 12, flexWrap: "wrap" }}>
-        <Link href="/admin" style={{ textDecoration: "underline" }}>
-          Admin Home
-        </Link>
-        <Link href="/admin/members" style={{ textDecoration: "underline" }}>
-          Members
-        </Link>
-        <Link href="/" style={{ textDecoration: "underline" }}>
-          Home
-        </Link>
-      </div>
+     <div style={{ marginTop: 10, display: "flex", gap: 12, flexWrap: "wrap" }}>
+  <Link href="/admin/members" style={{ textDecoration: "underline" }}>
+    Members
+  </Link>
+  <Link href="/" style={{ textDecoration: "underline" }}>
+    Home
+  </Link>
+</div>
+
 
       <div style={{ marginTop: "1rem" }}>
         <label style={{ display: "block", marginBottom: 6 }}>
