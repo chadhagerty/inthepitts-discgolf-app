@@ -4,119 +4,157 @@ import Image from "next/image";
 import Link from "next/link";
 import { useState } from "react";
 
-function CheckIn() {
-  const [name, setName] = useState("");
-  const [loading, setLoading] = useState(false);
-  const [result, setResult] = useState(null); // { ok, status, member?, error? }
+function Tile({ href, emoji, title, subtitle, external = false }) {
+  const inner = (
+    <div
+      style={{
+        border: "1px solid #ddd",
+        borderRadius: 14,
+        padding: "1rem",
+        display: "flex",
+        gap: "0.85rem",
+        alignItems: "center",
+        background: "#fff",
+        boxShadow: "0 1px 2px rgba(0,0,0,0.04)",
+      }}
+    >
+      <div style={{ fontSize: "1.8rem", width: 40, textAlign: "center" }}>
+        {emoji}
+      </div>
 
-  async function handleCheckIn() {
-    setLoading(true);
-    setResult(null);
+      <div style={{ textAlign: "left" }}>
+        <div style={{ fontWeight: 700, fontSize: "1rem" }}>{title}</div>
+        <div style={{ opacity: 0.75, fontSize: "0.9rem", marginTop: 2 }}>
+          {subtitle}
+        </div>
+      </div>
+    </div>
+  );
 
-    try {
-      const res = await fetch("/api/check-in", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ name }),
-      });
-
-      const data = await res.json().catch(() => ({}));
-
-      if (!res.ok) {
-        setResult({ ok: false, status: data?.status || "error", error: data?.error || "server-error" });
-        return;
-      }
-
-      setResult(data); // expected: { ok:true, status:"checked-in"|"expired"|"not-member", member? }
-    } catch (err) {
-      console.error("CHECK-IN CLIENT ERROR:", err);
-      setResult({ ok: false, status: "error", error: "network-error" });
-    } finally {
-      setLoading(false);
-    }
+  if (external) {
+    return (
+      <a
+        href={href}
+        target="_blank"
+        rel="noreferrer"
+        style={{ textDecoration: "none", color: "inherit" }}
+      >
+        {inner}
+      </a>
+    );
   }
 
   return (
-    <section style={{ padding: "2rem", borderTop: "1px solid #ddd" }}>
-      <h2>Course Check-In</h2>
-
-      <input
-        value={name}
-        onChange={(e) => setName(e.target.value)}
-        placeholder="Enter your name"
-        style={{ padding: "0.5rem", maxWidth: "320px", width: "100%" }}
-      />
-
-      <br />
-      <br />
-
-      <button onClick={handleCheckIn} disabled={loading}>
-        {loading ? "Checking..." : "Check In"}
-      </button>
-
-      {result?.ok && result?.status === "checked-in" && (
-        <p style={{ color: "green", marginTop: "1rem" }}>
-          ✅ Welcome back{result?.member?.name ? `, ${result.member.name}` : ""}! You’re checked in.
-        </p>
-      )}
-
-      {result?.status === "expired" && (
-        <div style={{ marginTop: "1rem" }}>
-          <p style={{ color: "red" }}>❌ Membership expired. Please renew.</p>
-          <p>
-            Yearly Membership: <strong>$100</strong>
-          </p>
-          <p>
-            Pay by e-transfer: <strong>inthepittsdiscgolf@gmail.com</strong>
-          </p>
-        </div>
-      )}
-
-      {result?.status === "not-member" && (
-        <div style={{ marginTop: "1rem" }}>
-          <p>Not on the member list yet.</p>
-          <p>
-            Day Pass: <strong>$10</strong>
-          </p>
-          <p>
-            Yearly Membership: <strong>$100</strong>
-          </p>
-          <p>
-            Pay by e-transfer: <strong>inthepittsdiscgolf@gmail.com</strong>
-          </p>
-        </div>
-      )}
-
-      {result?.status === "error" && (
-        <p style={{ color: "red", marginTop: "1rem" }}>
-          ❌ Something went wrong. ({result?.error || "error"})
-        </p>
-      )}
-    </section>
+    <Link href={href} style={{ textDecoration: "none", color: "inherit" }}>
+      {inner}
+    </Link>
   );
 }
 
 export default function Page() {
+  const tiles = [
+    // Core
+    {
+      href: "/checkin",
+      emoji: "✅",
+      title: "Course Check-In",
+      subtitle: "Members + day pass",
+    },
+    {
+      href: "/memberships",
+      emoji: "💳",
+      title: "Become a Member",
+      subtitle: "Pricing + how to pay",
+    },
+
+    // Course / community (placeholders for now)
+    {
+      href: "/stats",
+      emoji: "📊",
+      title: "Course Stats",
+      subtitle: "Trends (coming soon)",
+    },
+    {
+      href: "/leaderboard",
+      emoji: "🏆",
+      title: "Leaderboard",
+      subtitle: "Aces + wins (coming soon)",
+    },
+
+    // External
+    {
+      href: "https://www.youtube.com/",
+      emoji: "▶️",
+      title: "YouTube",
+      subtitle: "Course videos",
+      external: true,
+    },
+    {
+      href: "https://www.facebook.com/",
+      emoji: "📘",
+      title: "Facebook",
+      subtitle: "Updates + community",
+      external: true,
+    },
+    {
+      href: "https://www.discgolfvalley.com/",
+      emoji: "🥏",
+      title: "Disc Golf Valley",
+      subtitle: "Play the game",
+      external: true,
+    },
+  ];
+
   return (
     <main>
+      {/* Hero */}
       <section style={{ textAlign: "center", padding: "3rem 1rem" }}>
         <Image src="/logo.png" alt="Logo" width={140} height={140} />
-        <h1>In The Pitts Disc Golf Course</h1>
+        <h1 style={{ marginTop: "1rem" }}>In The Pitts Disc Golf Course</h1>
 
-        <p style={{ maxWidth: 800, margin: "1rem auto" }}>
-          A well-rounded 18-hole disc golf experience featuring tight wooded challenges,
-          wide-open distance shots, and a fun atmosphere with wildlife — including a friendly
-          donkey midway through your round.
+        <p style={{ maxWidth: 800, margin: "1rem auto", opacity: 0.9 }}>
+          A well-rounded 18-hole disc golf experience featuring tight wooded
+          challenges, wide-open distance shots, and a fun atmosphere with wildlife
+          — including a friendly donkey midway through your round.
         </p>
-
-        <div style={{ marginTop: "1.5rem" }}>
-          <Link href="/course">
-            <button>Hole Layout</button>
-          </Link>
-        </div>
       </section>
 
-      <CheckIn />
+      {/* App-style tiles */}
+      <section style={{ padding: "0 1rem 2rem" }}>
+        <div
+          style={{
+            maxWidth: 980,
+            margin: "0 auto",
+            display: "grid",
+            gridTemplateColumns: "repeat(auto-fit, minmax(240px, 1fr))",
+            gap: "12px",
+          }}
+        >
+          {tiles.map((t) => (
+            <Tile
+              key={t.href}
+              href={t.href}
+              emoji={t.emoji}
+              title={t.title}
+              subtitle={t.subtitle}
+              external={!!t.external}
+            />
+          ))}
+        </div>
+
+        <div
+          style={{
+            maxWidth: 980,
+            margin: "0.75rem auto 0",
+            opacity: 0.65,
+            fontSize: "0.85rem",
+            textAlign: "center",
+          }}
+        >
+          Tip: Bookmark Admin pages if you need them (they’re not shown on the
+          homepage).
+        </div>
+      </section>
     </main>
   );
 }
