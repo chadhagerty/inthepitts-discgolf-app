@@ -11,7 +11,8 @@ export default function HomePage() {
     { type: "external", href: "https://www.facebook.com/share/1D8MpvLLtv/?mibextid=wwXIfr", icon: "/icons/facebook.svg", title: "Facebook", subtitle: "Updates + community" },
 
     // Disc Golf Valley: we can link to a small page later with App Store + Google Play buttons
-    { type: "external", href: "https://www.discgolfvalley.com/", icon: "/icons/discgolf.svg", title: "Disc Golf Valley", subtitle: "Mobile game" },
+    { type: "internal", href: "/dgv", icon: "/icons/discgolf.svg", title: "Disc Golf Valley", subtitle: "Get the app" },
+
   ];
 
   const Tile = ({ t }) => {
