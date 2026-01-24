@@ -1,94 +1,156 @@
 import Link from "next/link";
 
+const LOGO_SRC = "/logo.png"; // <-- CHANGE THIS to your real logo file (e.g. "/pitts.png") OR set to null
+
 export default function HomePage() {
   const tiles = [
-    { type: "internal", href: "/checkin", icon: "/icons/checkin.svg", title: "Course Check-In", subtitle: "Members + day pass" },
-    { type: "internal", href: "/memberships", icon: "/icons/membership.svg", title: "Become a Member", subtitle: "Pricing + how to pay" },
-    { type: "internal", href: "/stats", icon: "/icons/stats.svg", title: "Course Stats", subtitle: "Trends + totals (soon)" },
-    { type: "internal", href: "/leaderboard", icon: "/icons/leaderboard.svg", title: "Leaderboard", subtitle: "Aces + wins (soon)" },
+    // Core
+    {
+      type: "internal",
+      href: "/checkin",
+      icon: "/icons/checkin.svg",
+      title: "Course Check-In",
+      subtitle: "Members + day pass",
+    },
+    {
+      type: "internal",
+      href: "/memberships",
+      icon: "/icons/membership.svg",
+      title: "Become a Member",
+      subtitle: "Pricing + how to pay",
+    },
 
-    { type: "external", href: "https://www.youtube.com/@InThePittsDiscGolfCourse", icon: "/icons/youtube.svg", title: "YouTube", subtitle: "Course videos" },
-    { type: "external", href: "https://www.facebook.com/share/1D8MpvLLtv/?mibextid=wwXIfr", icon: "/icons/facebook.svg", title: "Facebook", subtitle: "Updates + community" },
+    // Course / community
+    {
+      type: "internal",
+      href: "/stats",
+      icon: "/icons/stats.svg",
+      title: "Course Stats",
+      subtitle: "Trends + totals (soon)",
+    },
+    {
+      type: "internal",
+      href: "/leaderboard",
+      icon: "/icons/leaderboard.svg",
+      title: "Leaderboard",
+      subtitle: "Aces + wins (soon)",
+    },
 
-    // Disc Golf Valley: we can link to a small page later with App Store + Google Play buttons
-    { type: "internal", href: "/dgv", icon: "/icons/discgolf.svg", title: "Disc Golf Valley", subtitle: "Get the app" },
+    // External links (yours)
+    {
+      type: "external",
+      href: "https://www.youtube.com/@InThePittsDiscGolfCourse",
+      icon: "/icons/youtube.svg",
+      title: "YouTube",
+      subtitle: "Course videos",
+    },
+    {
+      type: "external",
+      href: "https://www.facebook.com/share/1D8MpvLLtv/?mibextid=wwXIfr",
+      icon: "/icons/facebook.svg",
+      title: "Facebook",
+      subtitle: "Updates + community",
+    },
 
+    // Disc Golf Valley (use our internal helper page)
+    {
+      type: "internal",
+      href: "/dgv",
+      icon: "/icons/discgolf.svg",
+      title: "Disc Golf Valley",
+      subtitle: "Get the app",
+    },
   ];
 
-  const Tile = ({ t }) => {
-    const content = (
+  return (
+    <main style={{ padding: "2rem", maxWidth: 980, margin: "0 auto" }}>
+      {/* Logo */}
+      {LOGO_SRC ? (
+        <div style={{ display: "flex", justifyContent: "center", marginBottom: 14 }}>
+          <img
+            src={LOGO_SRC}
+            alt="In The Pitts Disc Golf Course"
+            style={{ height: 70, width: "auto" }}
+          />
+        </div>
+      ) : null}
+
+      <h1 style={{ textAlign: "center", margin: 0 }}>In The Pitts Disc Golf</h1>
+      <p style={{ textAlign: "center", marginTop: 8, opacity: 0.8 }}>
+        Quick links for check-in, memberships, stats, and community.
+      </p>
+
+      {/* Tile grid */}
       <div
         style={{
-          border: "1px solid #e5e7eb",
-          borderRadius: 16,
-          padding: 16,
-          background: "white",
-          display: "flex",
-          gap: 14,
-          alignItems: "center",
-          boxShadow: "0 1px 0 rgba(0,0,0,0.03)",
-        }}
-      >
-        <div
-          style={{
-            width: 56,
-            height: 56,
-            borderRadius: 14,
-            background: "#f3f4f6",
-            display: "grid",
-            placeItems: "center",
-            flex: "0 0 auto",
-          }}
-        >
-          <img src={t.icon} alt="" width="34" height="34" style={{ display: "block" }} />
-        </div>
-
-        <div style={{ minWidth: 0 }}>
-          <div style={{ fontWeight: 700, fontSize: 16, lineHeight: 1.2 }}>{t.title}</div>
-          <div style={{ opacity: 0.75, marginTop: 4, fontSize: 13, lineHeight: 1.2 }}>{t.subtitle}</div>
-        </div>
-      </div>
-    );
-
-    if (t.type === "external") {
-      return (
-        <a href={t.href} target="_blank" rel="noreferrer" style={{ textDecoration: "none", color: "inherit" }}>
-          {content}
-        </a>
-      );
-    }
-
-    return (
-      <Link href={t.href} style={{ textDecoration: "none", color: "inherit" }}>
-        {content}
-      </Link>
-    );
-  };
-
-  return (
-    <main style={{ padding: "2rem 1rem", maxWidth: 980, margin: "0 auto" }}>
-      <header style={{ textAlign: "center", marginBottom: 18 }}>
-        <h1 style={{ margin: 0 }}>In The Pitts Disc Golf</h1>
-        <p style={{ margin: "10px auto 0", maxWidth: 700, opacity: 0.8 }}>
-          Quick links for check-in, memberships, stats, and community.
-        </p>
-      </header>
-
-      <section
-        style={{
           display: "grid",
-          gap: 14,
           gridTemplateColumns: "repeat(auto-fit, minmax(260px, 1fr))",
+          gap: 16,
+          marginTop: 28,
         }}
       >
-        {tiles.map((t) => (
-          <Tile key={t.href} t={t} />
-        ))}
-      </section>
+        {tiles.map((t) => {
+          const CardInner = (
+            <div
+              style={{
+                border: "1px solid rgba(0,0,0,0.12)",
+                borderRadius: 14,
+                padding: 16,
+                display: "flex",
+                alignItems: "center",
+                gap: 14,
+                textDecoration: "none",
+                color: "inherit",
+                background: "white",
+              }}
+            >
+              {/* Icon bubble */}
+              <div
+                style={{
+                  width: 44,
+                  height: 44,
+                  borderRadius: 14,
+                  display: "grid",
+                  placeItems: "center",
+                  background: "rgba(0,0,0,0.06)",
+                  flex: "0 0 auto",
+                }}
+              >
+                <img src={t.icon} alt="" width="24" height="24" style={{ display: "block" }} />
+              </div>
 
-      <footer style={{ textAlign: "center", marginTop: 18, opacity: 0.7, fontSize: 12 }}>
+              <div style={{ lineHeight: 1.2 }}>
+                <div style={{ fontWeight: 700 }}>{t.title}</div>
+                <div style={{ opacity: 0.75, marginTop: 4, fontSize: 14 }}>{t.subtitle}</div>
+              </div>
+            </div>
+          );
+
+          if (t.type === "external") {
+            return (
+              <a
+                key={t.title}
+                href={t.href}
+                target="_blank"
+                rel="noreferrer"
+                style={{ textDecoration: "none" }}
+              >
+                {CardInner}
+              </a>
+            );
+          }
+
+          return (
+            <Link key={t.title} href={t.href} style={{ textDecoration: "none" }}>
+              {CardInner}
+            </Link>
+          );
+        })}
+      </div>
+
+      <p style={{ textAlign: "center", opacity: 0.6, marginTop: 28, fontSize: 13 }}>
         Tip: Add this page to your Home Screen for an “app” feel.
-      </footer>
+      </p>
     </main>
   );
 }
