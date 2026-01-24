@@ -5,13 +5,18 @@ export default function MembershipsPage() {
     <main style={{ padding: "2rem", maxWidth: 900, margin: "0 auto" }}>
       <h1>Memberships</h1>
 
-      <p><strong>Day Pass:</strong> $10</p>
-      <p><strong>Yearly Membership:</strong> $100</p>
-      <p><strong>Pay by e-transfer:</strong> inthepittsdiscgolf@gmail.com</p>
+      <p style={{ marginTop: 12 }}>
+        Day Pass: <strong>$10</strong>
+        <br />
+        Yearly Membership: <strong>$100</strong>
+      </p>
 
-      <div style={{ marginTop: 12, display: "flex", gap: 12, flexWrap: "wrap" }}>
+      <p style={{ marginTop: 12 }}>
+        Pay by e-transfer: <strong>inthepittsdiscgolf@gmail.com</strong>
+      </p>
+
+      <div style={{ marginTop: 20 }}>
         <Link href="/" style={{ textDecoration: "underline" }}>← Home</Link>
-        <Link href="/checkin" style={{ textDecoration: "underline" }}>Course Check-In</Link>
       </div>
     </main>
   );
