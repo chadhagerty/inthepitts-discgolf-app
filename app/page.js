@@ -34,7 +34,7 @@ const tiles = [
     subtitle: "Coming soon",
   },
 
-  // External links (your real links)
+  // External
   {
     type: "external",
     href: "https://www.youtube.com/@InThePittsDiscGolfCourse",
@@ -56,24 +56,20 @@ const tiles = [
     href: "/dgv",
     icon: "/icons/discgolf.svg",
     title: "Disc Golf Valley",
-    subtitle: "Get the mobile game",
+    subtitle: "Get the app",
   },
 ];
 
 function Tile({ t }) {
-  const inner = (
-    <div style={styles.tile} role="button" aria-label={t.title}>
+  const content = (
+    <div style={styles.tile}>
       <div style={styles.iconWrap}>
-        <img src={t.icon} alt="" width={26} height={26} style={{ display: "block" }} />
+        <img src={t.icon} alt="" width={56} height={56} style={styles.iconImg} />
       </div>
 
-      <div style={{ minWidth: 0 }}>
+      <div style={styles.textWrap}>
         <div style={styles.tileTitle}>{t.title}</div>
         <div style={styles.tileSub}>{t.subtitle}</div>
-      </div>
-
-      <div style={styles.chev} aria-hidden="true">
-        ›
       </div>
     </div>
   );
@@ -84,16 +80,16 @@ function Tile({ t }) {
         href={t.href}
         target="_blank"
         rel="noreferrer"
-        style={{ textDecoration: "none", color: "inherit" }}
+        style={styles.tileLink}
       >
-        {inner}
+        {content}
       </a>
     );
   }
 
   return (
-    <Link href={t.href} style={{ textDecoration: "none", color: "inherit" }}>
-      {inner}
+    <Link href={t.href} style={styles.tileLink}>
+      {content}
     </Link>
   );
 }
@@ -102,58 +98,45 @@ export default function Page() {
   return (
     <main style={styles.page}>
       <section style={styles.hero}>
-        {/* Logo only (no big title text) */}
+        {/* LOGO ONLY (no headline text) */}
         <div style={styles.logoRow}>
           <Image
             src="/logo.png"
             alt="In The Pitts Disc Golf Course"
-            width={220}
-            height={220}
+            width={260}
+            height={120}
             priority
             style={styles.logo}
           />
         </div>
 
-        {/* Short intro (Hybrid B) */}
+        {/* Description */}
         <p style={styles.desc}>
-          A fun 18-hole disc golf experience with tight woods, open shots, and a friendly
-          donkey midway through your round.
+          A well-rounded 18-hole disc golf experience featuring tight wooded
+          challenges, wide-open distance shots, and a fun atmosphere with
+          wildlife — including a friendly donkey midway through your round.
         </p>
 
+        {/* Hole layout button */}
         <div style={styles.heroActions}>
           <Link href="/course" style={{ textDecoration: "none" }}>
             <button style={styles.primaryBtn}>Hole Layout</button>
           </Link>
-
-          <Link href="/checkin" style={{ textDecoration: "none" }}>
-            <button style={styles.secondaryBtn}>Check In</button>
-          </Link>
         </div>
       </section>
 
+      {/* Tile grid */}
       <section style={styles.gridWrap}>
         <div style={styles.grid}>
           {tiles.map((t) => (
             <Tile key={t.href} t={t} />
           ))}
         </div>
-      </section>
 
-      {/* Bottom nav (app-like) */}
-      <nav style={styles.bottomNav} aria-label="Bottom navigation">
-        <Link href="/" style={styles.bottomLink}>
-          Home
-        </Link>
-        <Link href="/checkin" style={styles.bottomLink}>
-          Check In
-        </Link>
-        <Link href="/memberships" style={styles.bottomLink}>
-          Membership
-        </Link>
-        <Link href="/admin" style={styles.bottomLink}>
-          Admin
-        </Link>
-      </nav>
+        <div style={styles.tip}>
+          Tip: Add this page to your Home Screen for an “app” feel.
+        </div>
+      </section>
     </main>
   );
 }
@@ -161,144 +144,116 @@ export default function Page() {
 const styles = {
   page: {
     minHeight: "100vh",
-    background: "linear-gradient(180deg, #f6f7fb 0%, #ffffff 60%)",
-    padding: "20px 14px 88px", // extra bottom space for nav
-    color: "#111827",
+    background: "#f6f7fb",
+    padding: "22px 14px 48px",
   },
 
   hero: {
-    maxWidth: 960,
+    maxWidth: 980,
     margin: "0 auto",
-    padding: "10px 10px 6px",
     textAlign: "center",
+    padding: "18px 10px 10px",
   },
 
   logoRow: {
     display: "flex",
     justifyContent: "center",
-    marginBottom: 8,
+    marginBottom: 6,
   },
 
+  // Keeps your logo from looking tiny
   logo: {
-    height: "auto",
     width: "auto",
-    borderRadius: 18,
-    boxShadow: "0 10px 30px rgba(17,24,39,0.10)",
+    height: "auto",
+    maxWidth: "92vw",
   },
 
   desc: {
-    maxWidth: 820,
+    maxWidth: 860,
     margin: "10px auto 14px",
     fontSize: 16,
-    lineHeight: 1.5,
-    color: "#374151",
+    lineHeight: 1.55,
+    color: "#1f2937",
   },
 
   heroActions: {
     display: "flex",
     justifyContent: "center",
     gap: 10,
-    flexWrap: "wrap",
-    marginTop: 8,
+    marginTop: 10,
   },
 
   primaryBtn: {
-    padding: "10px 14px",
-    borderRadius: 12,
-    border: "1px solid #111827",
-    background: "#111827",
-    color: "#fff",
-    cursor: "pointer",
-    fontWeight: 700,
-  },
-
-  secondaryBtn: {
-    padding: "10px 14px",
+    padding: "11px 16px",
     borderRadius: 12,
     border: "1px solid #d1d5db",
     background: "#ffffff",
     cursor: "pointer",
     fontWeight: 700,
-    color: "#111827",
   },
 
   gridWrap: {
-    maxWidth: 960,
+    maxWidth: 980,
     margin: "18px auto 0",
-    padding: "0 6px",
   },
 
   grid: {
     display: "grid",
     gridTemplateColumns: "repeat(auto-fit, minmax(240px, 1fr))",
-    gap: 12,
+    gap: 14,
+    padding: "0 8px",
+  },
+
+  tileLink: {
+    textDecoration: "none",
+    color: "inherit",
   },
 
   tile: {
     display: "flex",
     alignItems: "center",
-    gap: 12,
-    padding: "14px 14px",
-    borderRadius: 16,
-    border: "1px solid rgba(17,24,39,0.08)",
+    gap: 14,
     background: "#ffffff",
-    boxShadow: "0 10px 24px rgba(17,24,39,0.06)",
-    transition: "transform 120ms ease, box-shadow 120ms ease",
+    border: "1px solid #e5e7eb",
+    borderRadius: 16,
+    padding: "14px 14px",
+    boxShadow: "0 1px 0 rgba(0,0,0,0.03)",
   },
 
   iconWrap: {
-    width: 44,
-    height: 44,
-    borderRadius: 14,
+    width: 64,
+    height: 64,
     display: "grid",
     placeItems: "center",
-    background: "rgba(17,24,39,0.06)",
     flex: "0 0 auto",
+  },
+
+  iconImg: {
+    display: "block",
+    width: 56,
+    height: 56,
+  },
+
+  textWrap: {
+    minWidth: 0,
   },
 
   tileTitle: {
-    fontWeight: 800,
     fontSize: 16,
+    fontWeight: 800,
     color: "#111827",
-    lineHeight: 1.2,
   },
 
   tileSub: {
-    marginTop: 4,
+    marginTop: 3,
     fontSize: 13,
     color: "#6b7280",
-    lineHeight: 1.3,
   },
 
-  chev: {
-    marginLeft: "auto",
-    fontSize: 22,
-    color: "#9ca3af",
-    lineHeight: 1,
-    flex: "0 0 auto",
-  },
-
-  bottomNav: {
-    position: "fixed",
-    left: 0,
-    right: 0,
-    bottom: 0,
-    height: 64,
-    display: "flex",
-    justifyContent: "space-around",
-    alignItems: "center",
-    background: "rgba(255,255,255,0.92)",
-    backdropFilter: "blur(10px)",
-    borderTop: "1px solid rgba(17,24,39,0.08)",
-    padding: "0 8px",
-  },
-
-  bottomLink: {
-    textDecoration: "none",
-    color: "#111827",
-    fontWeight: 800,
-    fontSize: 13,
-    padding: "10px 10px",
-    borderRadius: 12,
+  tip: {
+    marginTop: 16,
+    textAlign: "center",
+    fontSize: 12,
+    color: "#6b7280",
   },
 };
