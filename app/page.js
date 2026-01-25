@@ -2,72 +2,25 @@ import Image from "next/image";
 import Link from "next/link";
 
 const tiles = [
-  // Core
-  {
-    type: "internal",
-    href: "/checkin",
-    icon: "/icons/checkin.svg",
-    title: "Course Check-In",
-    subtitle: "Members + day pass",
-  },
-  {
-    type: "internal",
-    href: "/memberships",
-    icon: "/icons/membership.svg",
-    title: "Become a Member",
-    subtitle: "Pricing + how to pay",
-  },
+  { type: "internal", href: "/checkin", icon: "/icons/checkin.svg", title: "Course Check-In", subtitle: "Members + day pass" },
+  { type: "internal", href: "/memberships", icon: "/icons/membership.svg", title: "Become a Member", subtitle: "Pricing + how to pay" },
 
-  // Course / community
-  {
-    type: "internal",
-    href: "/stats",
-    icon: "/icons/stats.svg",
-    title: "Course Stats",
-    subtitle: "Coming soon",
-  },
-  {
-    type: "internal",
-    href: "/leaderboard",
-    icon: "/icons/leaderboard.svg",
-    title: "Leaderboard",
-    subtitle: "Coming soon",
-  },
+  { type: "internal", href: "/stats", icon: "/icons/stats.svg", title: "Course Stats", subtitle: "Coming soon" },
+  { type: "internal", href: "/leaderboard", icon: "/icons/leaderboard.svg", title: "Leaderboard", subtitle: "Coming soon" },
 
-  // External
-  {
-    type: "external",
-    href: "https://www.youtube.com/@InThePittsDiscGolfCourse",
-    icon: "/icons/youtube.svg",
-    title: "YouTube",
-    subtitle: "Course videos",
-  },
-  {
-    type: "external",
-    href: "https://www.facebook.com/share/1D8MpvLLtv/?mibextid=wwXIfr",
-    icon: "/icons/facebook.svg",
-    title: "Facebook",
-    subtitle: "Updates + community",
-  },
+  { type: "external", href: "https://www.youtube.com/@InThePittsDiscGolfCourse", icon: "/icons/youtube.svg", title: "YouTube", subtitle: "Course videos" },
+  { type: "external", href: "https://www.facebook.com/share/1D8MpvLLtv/?mibextid=wwXIfr", icon: "/icons/facebook.svg", title: "Facebook", subtitle: "Updates + community" },
 
-  // Disc Golf Valley (internal page)
-  {
-    type: "internal",
-    href: "/dgv",
-    icon: "/icons/discgolf.svg",
-    title: "Disc Golf Valley",
-    subtitle: "Get the app",
-  },
+  { type: "internal", href: "/dgv", icon: "/icons/discgolf.svg", title: "Disc Golf Valley", subtitle: "Get the mobile game" },
 ];
 
 function Tile({ t }) {
   const content = (
     <div style={styles.tile}>
       <div style={styles.iconWrap}>
-        <img src={t.icon} alt="" width={56} height={56} style={styles.iconImg} />
+        <img src={t.icon} alt="" width={44} height={44} style={{ display: "block" }} />
       </div>
-
-      <div style={styles.textWrap}>
+      <div style={{ minWidth: 0 }}>
         <div style={styles.tileTitle}>{t.title}</div>
         <div style={styles.tileSub}>{t.subtitle}</div>
       </div>
@@ -76,19 +29,14 @@ function Tile({ t }) {
 
   if (t.type === "external") {
     return (
-      <a
-        href={t.href}
-        target="_blank"
-        rel="noreferrer"
-        style={styles.tileLink}
-      >
+      <a href={t.href} target="_blank" rel="noreferrer" style={{ textDecoration: "none", color: "inherit" }}>
         {content}
       </a>
     );
   }
 
   return (
-    <Link href={t.href} style={styles.tileLink}>
+    <Link href={t.href} style={{ textDecoration: "none", color: "inherit" }}>
       {content}
     </Link>
   );
@@ -98,26 +46,23 @@ export default function Page() {
   return (
     <main style={styles.page}>
       <section style={styles.hero}>
-        {/* LOGO ONLY (no headline text) */}
         <div style={styles.logoRow}>
           <Image
             src="/logo.png"
-            alt="In The Pitts Disc Golf Course"
-            width={260}
-            height={120}
+            alt="In The Pitts Disc Golf"
+            width={220}
+            height={220}
             priority
             style={styles.logo}
           />
         </div>
 
-        {/* Description */}
         <p style={styles.desc}>
-          A well-rounded 18-hole disc golf experience featuring tight wooded
-          challenges, wide-open distance shots, and a fun atmosphere with
-          wildlife — including a friendly donkey midway through your round.
+          A well-rounded 18-hole disc golf experience featuring tight wooded challenges,
+          wide-open distance shots, and a fun atmosphere with wildlife — including a friendly
+          donkey midway through your round.
         </p>
 
-        {/* Hole layout button */}
         <div style={styles.heroActions}>
           <Link href="/course" style={{ textDecoration: "none" }}>
             <button style={styles.primaryBtn}>Hole Layout</button>
@@ -125,16 +70,11 @@ export default function Page() {
         </div>
       </section>
 
-      {/* Tile grid */}
       <section style={styles.gridWrap}>
         <div style={styles.grid}>
           {tiles.map((t) => (
             <Tile key={t.href} t={t} />
           ))}
-        </div>
-
-        <div style={styles.tip}>
-          Tip: Add this page to your Home Screen for an “app” feel.
         </div>
       </section>
     </main>
@@ -149,30 +89,28 @@ const styles = {
   },
 
   hero: {
-    maxWidth: 980,
+    maxWidth: 920,
     margin: "0 auto",
+    padding: "10px 10px 8px",
     textAlign: "center",
-    padding: "18px 10px 10px",
   },
 
   logoRow: {
     display: "flex",
     justifyContent: "center",
-    marginBottom: 6,
+    marginBottom: 10,
   },
 
-  // Keeps your logo from looking tiny
   logo: {
-    width: "auto",
     height: "auto",
-    maxWidth: "92vw",
+    width: "auto",
   },
 
   desc: {
-    maxWidth: 860,
+    maxWidth: 820,
     margin: "10px auto 14px",
     fontSize: 16,
-    lineHeight: 1.55,
+    lineHeight: 1.5,
     color: "#1f2937",
   },
 
@@ -180,11 +118,11 @@ const styles = {
     display: "flex",
     justifyContent: "center",
     gap: 10,
-    marginTop: 10,
+    marginTop: 6,
   },
 
   primaryBtn: {
-    padding: "11px 16px",
+    padding: "10px 14px",
     borderRadius: 12,
     border: "1px solid #d1d5db",
     background: "#ffffff",
@@ -193,67 +131,54 @@ const styles = {
   },
 
   gridWrap: {
-    maxWidth: 980,
-    margin: "18px auto 0",
+    maxWidth: 920,
+    margin: "16px auto 0",
   },
 
   grid: {
     display: "grid",
     gridTemplateColumns: "repeat(auto-fit, minmax(240px, 1fr))",
-    gap: 14,
+    gap: 12,
     padding: "0 8px",
-  },
-
-  tileLink: {
-    textDecoration: "none",
-    color: "inherit",
   },
 
   tile: {
     display: "flex",
     alignItems: "center",
-    gap: 14,
-    background: "#ffffff",
-    border: "1px solid #e5e7eb",
+    gap: 12,
+    padding: 14,
     borderRadius: 16,
-    padding: "14px 14px",
-    boxShadow: "0 1px 0 rgba(0,0,0,0.03)",
+    background: "#ffffff",
+    border: "1px solid rgba(0,0,0,0.06)",
+    boxShadow: "0 6px 18px rgba(15, 23, 42, 0.06)",
+    transition: "transform 120ms ease",
   },
 
   iconWrap: {
-    width: 64,
-    height: 64,
+    width: 52,
+    height: 52,
     display: "grid",
     placeItems: "center",
-    flex: "0 0 auto",
-  },
-
-  iconImg: {
-    display: "block",
-    width: 56,
-    height: 56,
-  },
-
-  textWrap: {
-    minWidth: 0,
+    borderRadius: 16,
+    background: "rgba(15,23,42,0.04)",
+    flexShrink: 0,
   },
 
   tileTitle: {
     fontSize: 16,
     fontWeight: 800,
-    color: "#111827",
+    color: "#0f172a",
+    whiteSpace: "nowrap",
+    overflow: "hidden",
+    textOverflow: "ellipsis",
   },
 
   tileSub: {
-    marginTop: 3,
+    marginTop: 2,
     fontSize: 13,
-    color: "#6b7280",
-  },
-
-  tip: {
-    marginTop: 16,
-    textAlign: "center",
-    fontSize: 12,
-    color: "#6b7280",
+    color: "#475569",
+    whiteSpace: "nowrap",
+    overflow: "hidden",
+    textOverflow: "ellipsis",
   },
 };
