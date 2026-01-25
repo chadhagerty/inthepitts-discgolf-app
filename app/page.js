@@ -1,43 +1,36 @@
 import Image from "next/image";
 import Link from "next/link";
 
+export const dynamic = "force-dynamic";
+
 const tiles = [
   { type: "internal", href: "/checkin", icon: "/icons/checkin.svg", title: "Course Check-In", subtitle: "Members + day pass" },
   { type: "internal", href: "/memberships", icon: "/icons/membership.svg", title: "Become a Member", subtitle: "Pricing + how to pay" },
-
   { type: "internal", href: "/stats", icon: "/icons/stats.svg", title: "Course Stats", subtitle: "Coming soon" },
   { type: "internal", href: "/leaderboard", icon: "/icons/leaderboard.svg", title: "Leaderboard", subtitle: "Coming soon" },
-
   { type: "external", href: "https://www.youtube.com/@InThePittsDiscGolfCourse", icon: "/icons/youtube.svg", title: "YouTube", subtitle: "Course videos" },
   { type: "external", href: "https://www.facebook.com/share/1D8MpvLLtv/?mibextid=wwXIfr", icon: "/icons/facebook.svg", title: "Facebook", subtitle: "Updates + community" },
-
   { type: "internal", href: "/dgv", icon: "/icons/discgolf.svg", title: "Disc Golf Valley", subtitle: "Get the mobile game" },
 ];
 
 function Tile({ t }) {
-  const content = (
+  const inner = (
     <div style={styles.tile}>
-      <div style={styles.iconWrap}>
-        <img src={t.icon} alt="" width={44} height={44} style={{ display: "block" }} />
-      </div>
-      <div style={{ minWidth: 0 }}>
+      <img src={t.icon} alt="" width={44} height={44} />
+      <div>
         <div style={styles.tileTitle}>{t.title}</div>
         <div style={styles.tileSub}>{t.subtitle}</div>
       </div>
     </div>
   );
 
-  if (t.type === "external") {
-    return (
-      <a href={t.href} target="_blank" rel="noreferrer" style={{ textDecoration: "none", color: "inherit" }}>
-        {content}
-      </a>
-    );
-  }
-
-  return (
+  return t.type === "external" ? (
+    <a href={t.href} target="_blank" rel="noreferrer" style={{ textDecoration: "none", color: "inherit" }}>
+      {inner}
+    </a>
+  ) : (
     <Link href={t.href} style={{ textDecoration: "none", color: "inherit" }}>
-      {content}
+      {inner}
     </Link>
   );
 }
@@ -46,141 +39,30 @@ export default function Page() {
   return (
     <main style={styles.page}>
       <section style={styles.hero}>
-        <div style={styles.logoRow}>
-          <Image
-            src="/logo.png"
-            alt="In The Pitts Disc Golf"
-            width={220}
-            height={220}
-            priority
-            style={styles.logo}
-          />
-        </div>
-
+        <Image src="/logo.png" alt="In The Pitts Disc Golf" width={220} height={220} priority />
         <p style={styles.desc}>
-          A well-rounded 18-hole disc golf experience featuring tight wooded challenges,
-          wide-open distance shots, and a fun atmosphere with wildlife — including a friendly
-          donkey midway through your round.
+          A well-rounded 18-hole disc golf experience featuring tight wooded challenges, wide-open distance shots,
+          and a fun atmosphere — including a friendly donkey midway through your round.
         </p>
-
-        <div style={styles.heroActions}>
-          <Link href="/course" style={{ textDecoration: "none" }}>
-            <button style={styles.primaryBtn}>Hole Layout</button>
-          </Link>
-        </div>
+        <Link href="/course">
+          <button style={styles.primaryBtn}>Hole Layout</button>
+        </Link>
       </section>
 
-      <section style={styles.gridWrap}>
-        <div style={styles.grid}>
-          {tiles.map((t) => (
-            <Tile key={t.href} t={t} />
-          ))}
-        </div>
+      <section style={styles.grid}>
+        {tiles.map(t => <Tile key={t.href} t={t} />)}
       </section>
     </main>
   );
 }
 
 const styles = {
-  page: {
-    minHeight: "100vh",
-    background: "#f6f7fb",
-    padding: "22px 14px 48px",
-  },
-
-  hero: {
-    maxWidth: 920,
-    margin: "0 auto",
-    padding: "10px 10px 8px",
-    textAlign: "center",
-  },
-
-  logoRow: {
-    display: "flex",
-    justifyContent: "center",
-    marginBottom: 10,
-  },
-
-  logo: {
-    height: "auto",
-    width: "auto",
-  },
-
-  desc: {
-    maxWidth: 820,
-    margin: "10px auto 14px",
-    fontSize: 16,
-    lineHeight: 1.5,
-    color: "#1f2937",
-  },
-
-  heroActions: {
-    display: "flex",
-    justifyContent: "center",
-    gap: 10,
-    marginTop: 6,
-  },
-
-  primaryBtn: {
-    padding: "10px 14px",
-    borderRadius: 12,
-    border: "1px solid #d1d5db",
-    background: "#ffffff",
-    cursor: "pointer",
-    fontWeight: 700,
-  },
-
-  gridWrap: {
-    maxWidth: 920,
-    margin: "16px auto 0",
-  },
-
-  grid: {
-    display: "grid",
-    gridTemplateColumns: "repeat(auto-fit, minmax(240px, 1fr))",
-    gap: 12,
-    padding: "0 8px",
-  },
-
-  tile: {
-    display: "flex",
-    alignItems: "center",
-    gap: 12,
-    padding: 14,
-    borderRadius: 16,
-    background: "#ffffff",
-    border: "1px solid rgba(0,0,0,0.06)",
-    boxShadow: "0 6px 18px rgba(15, 23, 42, 0.06)",
-    transition: "transform 120ms ease",
-  },
-
-  iconWrap: {
-    width: 52,
-    height: 52,
-    display: "grid",
-    placeItems: "center",
-    borderRadius: 16,
-    background: "rgba(15,23,42,0.04)",
-    flexShrink: 0,
-  },
-
-  tileTitle: {
-    fontSize: 16,
-    fontWeight: 800,
-    color: "#0f172a",
-    whiteSpace: "nowrap",
-    overflow: "hidden",
-    textOverflow: "ellipsis",
-  },
-
-  tileSub: {
-    marginTop: 2,
-    fontSize: 13,
-    color: "#475569",
-    whiteSpace: "nowrap",
-    overflow: "hidden",
-    textOverflow: "ellipsis",
-  },
+  page: { minHeight: "100vh", background: "#f6f7fb", padding: 24 },
+  hero: { textAlign: "center", maxWidth: 900, margin: "0 auto" },
+  desc: { margin: "12px auto", maxWidth: 700, color: "#1f2937" },
+  primaryBtn: { padding: "10px 16px", borderRadius: 10, border: "1px solid #ccc", background: "#fff", cursor: "pointer" },
+  grid: { display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(220px,1fr))", gap: 14, maxWidth: 900, margin: "24px auto" },
+  tile: { display: "flex", gap: 12, alignItems: "center", padding: 14, background: "#fff", borderRadius: 14, border: "1px solid #e5e7eb" },
+  tileTitle: { fontWeight: 600 },
+  tileSub: { fontSize: 13, color: "#6b7280" },
 };
-
-<!-- deploy-bust: 1769378183 -->
