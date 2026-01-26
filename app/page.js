@@ -1,105 +1,46 @@
 import Image from "next/image";
 import Link from "next/link";
 
-// Force Vercel to re-render (avoids “stuck” prerender surprises)
 export const dynamic = "force-dynamic";
 
 const tiles = [
   // Core
-  {
-    type: "internal",
-    href: "/checkin",
-    icon: "/icons/checkin.svg",
-    title: "Course Check-In",
-    subtitle: "Members + day pass",
-  },
-  {
-    type: "internal",
-    href: "/memberships",
-    icon: "/icons/membership.svg",
-    title: "Become a Member",
-    subtitle: "Pricing + how to pay",
-  },
+  { type: "internal", href: "/checkin", icon: "/icons/checkin.svg", title: "Course Check-In", subtitle: "Members + day pass" },
+  { type: "internal", href: "/memberships", icon: "/icons/membership.svg", title: "Become a Member", subtitle: "Pricing + how to pay" },
 
   // Course / community
-  {
-    type: "internal",
-    href: "/stats",
-    icon: "/icons/stats.svg",
-    title: "Course Stats",
-    subtitle: "Coming soon",
-  },
-  {
-    type: "internal",
-    href: "/leaderboard",
-    icon: "/icons/leaderboard.svg",
-    title: "Leaderboard",
-    subtitle: "Coming soon",
-  },
+  { type: "internal", href: "/stats", icon: "/icons/stats.svg", title: "Course Stats", subtitle: "Coming soon" },
+  { type: "internal", href: "/leaderboard", icon: "/icons/leaderboard.svg", title: "Leaderboard", subtitle: "Coming soon" },
 
-  // New tiles (icons exist now)
-  {
-    type: "internal",
-    href: "/review",
-    icon: "/icons/review.svg",
-    title: "Review",
-    subtitle: "Leave feedback (soon)",
-  },
-  {
-    type: "internal",
-    href: "/events",
-    icon: "/icons/events.svg",
-    title: "Upcoming Events",
-    subtitle: "Tournaments + leagues (soon)",
-  },
-  {
-    type: "internal",
-    href: "/chat",
-    icon: "/icons/chat.svg",
-    title: "Chat",
-    subtitle: "Community chat (soon)",
-  },
+  // New pages
+  { type: "internal", href: "/reviews", icon: "/icons/reviews.svg", title: "Reviews", subtitle: "Coming soon" },
+  { type: "internal", href: "/events", icon: "/icons/events.svg", title: "Upcoming Events", subtitle: "Coming soon" },
+  { type: "internal", href: "/chat", icon: "/icons/chat.svg", title: "Chat", subtitle: "Coming soon" },
 
   // External links (your real links)
-  {
-    type: "external",
-    href: "https://www.youtube.com/@InThePittsDiscGolfCourse",
-    icon: "/icons/youtube.svg",
-    title: "YouTube",
-    subtitle: "Course videos",
-  },
-  {
-    type: "external",
-    href: "https://www.facebook.com/share/1D8MpvLLtv/?mibextid=wwXIfr",
-    icon: "/icons/facebook.svg",
-    title: "Facebook",
-    subtitle: "Updates + community",
-  },
+  { type: "external", href: "https://www.youtube.com/@InThePittsDiscGolfCourse", icon: "/icons/youtube.svg", title: "YouTube", subtitle: "Course videos" },
+  { type: "external", href: "https://www.facebook.com/share/1D8MpvLLtv/?mibextid=wwXIfr", icon: "/icons/facebook.svg", title: "Facebook", subtitle: "Updates + community" },
 
   // Disc Golf Valley (your internal page)
-  {
-    type: "internal",
-    href: "/dgv",
-    icon: "/icons/discgolf.svg",
-    title: "Disc Golf Valley",
-    subtitle: "Get the mobile game",
-  },
+  { type: "internal", href: "/dgv", icon: "/icons/discgolf.svg", title: "Disc Golf Valley", subtitle: "Get the mobile game" },
 ];
+
+function BannerIcon({ src, label }) {
+  return (
+    <div style={styles.badgeWrap} aria-hidden="true">
+      <div style={styles.badgeCircle}>
+        <img src={src} alt="" width={26} height={26} style={styles.badgeImg} />
+      </div>
+      <div style={styles.badgeBanner}>{label}</div>
+    </div>
+  );
+}
 
 function Tile({ t }) {
   const content = (
     <div style={styles.tile}>
-      <div style={styles.iconWrap}>
-        <img
-          src={t.icon}
-          alt=""
-          width={44}
-          height={44}
-          style={{ display: "block" }}
-        />
-      </div>
-
-      <div>
+      <BannerIcon src={t.icon} label={t.title} />
+      <div style={{ minWidth: 0 }}>
         <div style={styles.tileTitle}>{t.title}</div>
         <div style={styles.tileSub}>{t.subtitle}</div>
       </div>
@@ -133,18 +74,18 @@ export default function Page() {
         <div style={styles.logoRow}>
           <Image
             src="/logo.png"
-            alt="In The Pitts Disc Golf Course"
-            width={220}
-            height={220}
+            alt="In The Pitts Disc Golf"
+            width={200}
+            height={200}
             priority
             style={styles.logo}
           />
         </div>
 
         <p style={styles.desc}>
-          A well-rounded 18-hole disc golf experience featuring tight wooded
-          challenges, wide-open distance shots, and a fun atmosphere with
-          wildlife — including a friendly donkey midway through your round.
+          A well-rounded 18-hole disc golf experience featuring tight wooded challenges,
+          wide-open distance shots, and a fun atmosphere with wildlife — including a friendly
+          donkey midway through your round.
         </p>
 
         <div style={styles.heroActions}>
@@ -191,7 +132,7 @@ const styles = {
   },
 
   desc: {
-    maxWidth: 820,
+    maxWidth: 860,
     margin: "10px auto 14px",
     fontSize: 16,
     lineHeight: 1.5,
@@ -207,7 +148,7 @@ const styles = {
 
   primaryBtn: {
     padding: "10px 14px",
-    borderRadius: 10,
+    borderRadius: 12,
     border: "1px solid #d1d5db",
     background: "#ffffff",
     cursor: "pointer",
@@ -222,7 +163,7 @@ const styles = {
   grid: {
     display: "grid",
     gridTemplateColumns: "repeat(auto-fit, minmax(240px, 1fr))",
-    gap: 14,
+    gap: 12,
     padding: "0 8px",
   },
 
@@ -230,31 +171,65 @@ const styles = {
     display: "flex",
     alignItems: "center",
     gap: 12,
-    padding: "14px 14px",
-    borderRadius: 14,
-    background: "#ffffff",
+    borderRadius: 16,
     border: "1px solid #e5e7eb",
+    background: "#fff",
+    padding: 14,
     boxShadow: "0 1px 2px rgba(0,0,0,0.04)",
   },
 
-  iconWrap: {
-    width: 54,
-    height: 54,
-    borderRadius: 14,
-    display: "grid",
-    placeItems: "center",
-  },
-
   tileTitle: {
-    fontSize: 16,
     fontWeight: 800,
+    fontSize: 15,
     color: "#111827",
-    lineHeight: 1.1,
+    lineHeight: 1.2,
   },
 
   tileSub: {
+    marginTop: 4,
     fontSize: 13,
     color: "#6b7280",
-    marginTop: 3,
+    lineHeight: 1.2,
+  },
+
+  // Banner badge styles (the “look” you want)
+  badgeWrap: {
+    width: 70,
+    flex: "0 0 auto",
+    display: "grid",
+    justifyItems: "center",
+    rowGap: 6,
+  },
+
+  badgeCircle: {
+    width: 48,
+    height: 48,
+    borderRadius: 999,
+    border: "1px solid #e5e7eb",
+    background: "#ffffff",
+    display: "grid",
+    placeItems: "center",
+    boxShadow: "0 4px 14px rgba(17,24,39,0.08)",
+  },
+
+  badgeImg: {
+    display: "block",
+  },
+
+  badgeBanner: {
+    maxWidth: 76,
+    padding: "4px 8px",
+    borderRadius: 999,
+    border: "1px solid #e5e7eb",
+    background: "#ffffff",
+    fontSize: 10.5,
+    fontWeight: 800,
+    color: "#111827",
+    textAlign: "center",
+    lineHeight: 1.1,
+    boxShadow: "0 4px 14px rgba(17,24,39,0.06)",
+    whiteSpace: "nowrap",
+    overflow: "hidden",
+    textOverflow: "ellipsis",
   },
 };
