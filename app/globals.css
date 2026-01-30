@@ -1,0 +1,13 @@
+@media (max-width: 760px) { .tileGrid { grid-template-columns: repeat(3, 1fr); } }
+@media (max-width: 520px) { .tileGrid { grid-template-columns: repeat(2, 1fr); } }
+@media (max-width: 900px) {
+  main .tileGrid {
+    grid-template-columns: repeat(4, 1fr);
+  }
+}
+
+@media (max-width: 720px) {
+  main .tileGrid {
+    grid-template-columns: repeat(3, 1fr);
+  }
+}
