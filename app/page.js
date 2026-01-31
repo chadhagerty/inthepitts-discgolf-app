@@ -2,6 +2,11 @@ import Image from "next/image";
 import Link from "next/link";
 
 export const dynamic = "force-dynamic";
+export const metadata = {
+  title: "In The Pitts Disc Golf",
+  description: "In The Pitts Disc Golf Course",
+};
+
 
 const tiles = [
   // Row 1
@@ -165,29 +170,31 @@ export default function Page() {
           color:inherit;
         }
 
-        .tileFrame{
-          width:min(190px, 44vw);
-          height:min(190px, 44vw);
-          border-radius:999px;
-          overflow:hidden;
-          display:flex;
-          align-items:center;
-          justify-content:center;
-          background:transparent;
-        }
+        tileFrame: {
+  width: 170,
+  height: 170,
+  maxWidth: "42vw",
+  maxHeight: "42vw",
+  borderRadius: "50%",
+  overflow: "hidden",
+  display: "flex",
+  alignItems: "center",
+  justifyContent: "center",
+  background: "transparent",
+},
+
+
+
 
         .tileImg{
-          width:100%;
-          height:100%;
-          object-fit:contain;
-          /* Bleed fix */
-          clip-path: circle(32% at 50% 50%);
-          filter:none;
-          user-select:none;
-          -webkit-user-drag:none;
-          display:block;
+          width:92%;
+          height:92%;
+          object-fit: "contain";
+          display: "block";
         }
-      `}</style>
+      `
+    
+    }</style>
     </main>
   );
 }
