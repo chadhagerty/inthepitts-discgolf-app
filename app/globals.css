@@ -50,3 +50,9 @@ body {
 body {
   position: relative;
 }
+
+html, body {
+  overflow-x: hidden;
+  width: 100%;
+}
+* { box-sizing: border-box; }

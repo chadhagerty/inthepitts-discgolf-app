@@ -73,7 +73,8 @@ export default function Page() {
       </section>
 
       <section className="gridWrap">
-        <div className="tileGrid">
+        <div className="tileGrid" style={styles.tileGrid}>
+
           {tiles.map((t) => (
             <Tile key={t.href} t={t} />
           ))}
@@ -171,16 +172,16 @@ export default function Page() {
         }
 
         tileFrame: {
-  width: 170,
-  height: 170,
-  maxWidth: "42vw",
-  maxHeight: "42vw",
-  borderRadius: "50%",
-  overflow: "hidden",
+  width: 190,
+  height: 190,
+  borderRadius: 999,
+  overflow: "hidden",          // <-- KEY
   display: "flex",
   alignItems: "center",
   justifyContent: "center",
   background: "transparent",
+},
+
 },
 
 
@@ -189,16 +190,10 @@ export default function Page() {
         tileImg: {
   width: "100%",
   height: "100%",
-  objectFit: "contain",
-
-  // Safari-safe masking (THIS fixes bleed)
-  WebkitMaskImage: "radial-gradient(circle at center, black 60%, transparent 61%)",
-  maskImage: "radial-gradient(circle at center, black 60%, transparent 61%)",
-  WebkitMaskRepeat: "no-repeat",
-  maskRepeat: "no-repeat",
-  WebkitMaskSize: "contain",
-  maskSize: "contain",
+  objectFit: "cover",          // <-- KEY (contain lets corners show)
+  display: "block",
 },
+
 
       `
     
