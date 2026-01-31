@@ -149,6 +149,10 @@ const styles = {
     alignItems: "center",
     justifyContent: "center",
     background: "transparent",
+
+    WebkitMaskImage: "-webkit-radial-gradient(white, black)",
+transform: "translateZ(0)",
+
   },
 
   // cover (not contain) prevents transparent corners showing
