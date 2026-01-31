@@ -4,16 +4,19 @@ import Link from "next/link";
 export const dynamic = "force-dynamic";
 
 const tiles = [
+  // Row 1
   { type: "internal", href: "/checkin", icon: "/tile-icons/checkin.png", label: "Course Check-In" },
   { type: "internal", href: "/memberships", icon: "/tile-icons/membership.png", label: "Membership" },
   { type: "internal", href: "/events", icon: "/tile-icons/events.png", label: "Events" },
   { type: "internal", href: "/chat", icon: "/tile-icons/chat.png", label: "Chat" },
 
+  // Row 2
   { type: "internal", href: "/stats", icon: "/tile-icons/stats.png", label: "Stats" },
   { type: "internal", href: "/leaderboard", icon: "/tile-icons/leaderboard.png", label: "Leaderboard" },
   { type: "internal", href: "/review", icon: "/tile-icons/reviews.png", label: "Reviews" },
   { type: "internal", href: "/sponsors", icon: "/tile-icons/sponsors.png", label: "Sponsors" },
 
+  // Row 3
   { type: "external", href: "https://www.youtube.com/@InThePittsDiscGolfCourse", icon: "/tile-icons/youtube.png", label: "YouTube" },
   { type: "external", href: "https://www.facebook.com/share/1D8MpvLLtv/", icon: "/tile-icons/facebook.png", label: "Facebook" },
   { type: "internal", href: "/dgv", icon: "/tile-icons/dgv.png", label: "Disc Golf Valley" },
@@ -21,26 +24,21 @@ const tiles = [
 
 function Tile({ t }) {
   const content = (
-    <div style={styles.tileFrame}>
-      <img
-        src={t.icon}
-        alt={t.label}
-        draggable={false}
-        style={styles.tileImg}
-      />
+    <div className="tileFrame">
+      <img src={t.icon} alt={t.label} draggable={false} className="tileImg" />
     </div>
   );
 
   if (t.type === "external") {
     return (
-      <a href={t.href} target="_blank" rel="noreferrer" style={styles.tileLink}>
+      <a href={t.href} target="_blank" rel="noreferrer" className="tileLink" aria-label={t.label}>
         {content}
       </a>
     );
   }
 
   return (
-    <Link href={t.href} style={styles.tileLink}>
+    <Link href={t.href} className="tileLink" aria-label={t.label}>
       {content}
     </Link>
   );
@@ -48,130 +46,148 @@ function Tile({ t }) {
 
 export default function Page() {
   return (
-    <main style={styles.page}>
-      <section style={styles.hero}>
+    <main className="homePage">
+      <section className="hero">
         <Image
-  src="/logo.png"
-  alt="In The Pitts Disc Golf"
-  width={240}
-  height={240}
-  priority
-  style={styles.logo}
-/>
+          src="/logo.png"
+          alt="In The Pitts Disc Golf"
+          width={240}
+          height={240}
+          priority
+          className="logo"
+        />
 
-        <p style={styles.desc}>
-          A well rounded 18 hole course with both wooded and open holes. Great for the beginner or seasoned vet, feature's some short forest holes and some long bombers. Say hello to the friendly donkey at hole 6 tee pad
+        <p className="desc">
+          A well rounded 18 hole course with both wooded and open holes. Great for the beginner or seasoned vet,
+          features some short forest holes and some long bombers. Say hello to the friendly donkey at hole 6 tee pad.
         </p>
-        <Link href="/course">
-          <button style={styles.primaryBtn}>Hole Layout</button>
+
+        <Link href="/course" style={{ textDecoration: "none" }}>
+          <button className="primaryBtn">Hole Layout</button>
         </Link>
       </section>
 
-      <section style={styles.gridWrap}>
-        <div style={styles.tileGrid}>
+      <section className="gridWrap">
+        <div className="tileGrid">
           {tiles.map((t) => (
             <Tile key={t.href} t={t} />
           ))}
         </div>
       </section>
+
+      {/* IMPORTANT: plain <style> tag (NOT styled-jsx), so no Server Component errors */}
+      <style>{`
+        .homePage{
+          min-height:100vh;
+          padding:20px 14px 44px;
+          overflow-x:hidden; /* kills sideways scroll */
+          background-color: transparent;
+          background-image:
+            radial-gradient(900px 500px at 15% -10%, rgba(239,68,68,0.03), transparent 60%),
+            radial-gradient(900px 500px at 85% 10%, rgba(255,255,255,0.08), transparent 55%),
+            radial-gradient(700px 450px at 50% 110%, rgba(34,197,94,0.18), transparent 55%);
+        }
+
+        .hero{
+          display:flex;
+          flex-direction:column;
+          align-items:center;
+          text-align:center;
+          background:transparent;
+          padding:0;
+          margin-bottom:24px;
+        }
+
+        .logo{
+          background:transparent;
+          box-shadow:none;
+          padding:0;
+          border-radius:0;
+          filter: drop-shadow(0 10px 25px rgba(0,0,0,0.10));
+          mix-blend-mode:multiply;
+          height:auto;
+          width:auto;
+        }
+
+        .desc{
+          max-width:700px;
+          margin:10px auto;
+          font-size:15px;
+          line-height:1.45;
+        }
+
+        .primaryBtn{
+          margin-top:10px;
+          padding:10px 16px;
+          border-radius:12px;
+          border:1px solid #d1d5db;
+          background:#fff;
+          font-weight:700;
+          cursor:pointer;
+        }
+
+        .gridWrap{
+          width:100%;
+          max-width:980px;
+          margin:16px auto 0;
+          padding:0 8px;
+          box-sizing:border-box;
+        }
+
+        .tileGrid{
+          width:100%;
+          display:grid;
+          grid-template-columns:repeat(4, minmax(0, 1fr));
+          gap:16px;
+          justify-items:center;
+          align-items:center;
+          box-sizing:border-box;
+        }
+
+        /* Tablet */
+        @media (max-width: 900px){
+          .tileGrid{ grid-template-columns:repeat(3, minmax(0, 1fr)); }
+        }
+
+        /* Phone */
+        @media (max-width: 640px){
+          .tileGrid{
+            grid-template-columns:repeat(2, minmax(0, 1fr));
+            gap:12px;
+          }
+        }
+
+        .tileLink{
+          width:100%;
+          display:flex;
+          justify-content:center;
+          text-decoration:none;
+          color:inherit;
+        }
+
+        .tileFrame{
+          width:min(190px, 44vw);
+          height:min(190px, 44vw);
+          border-radius:999px;
+          overflow:hidden;
+          display:flex;
+          align-items:center;
+          justify-content:center;
+          background:transparent;
+        }
+
+        .tileImg{
+          width:100%;
+          height:100%;
+          object-fit:contain;
+          /* Bleed fix */
+          clip-path: circle(32% at 50% 50%);
+          filter:none;
+          user-select:none;
+          -webkit-user-drag:none;
+          display:block;
+        }
+      `}</style>
     </main>
   );
 }
-
-const styles = {
-page: {
-  minHeight: "100vh",
-  padding: "20px 14px 44px",
-  backgroundColor: "#ffffff00",
-  backgroundImage: `
-    radial-gradient(900px 500px at 15% -10%, rgba(239, 68, 68, 0.03), transparent 60%),
-    radial-gradient(900px 500px at 85% 10%, rgba(255,255,255,0.08), transparent 55%),
-    radial-gradient(700px 450px at 50% 110%, rgba(34,197,94,0.18), transparent 55%)
-  `,
-},
-
-  hero: {
-  display: "flex",
-  flexDirection: "column",
-  alignItems: "center",
-  background: "transparent",
-  padding: 0,
-  marginBottom: 24,
-},
-
-  desc: {
-    maxWidth: 700,
-    margin: "10px auto",
-    fontSize: 15,
-  },
-  primaryBtn: {
-    marginTop: 10,
-    padding: "10px 16px",
-    borderRadius: 12,
-    border: "1px solid #d1d5db",
-    background: "#fff",
-    fontWeight: 700,
-    cursor: "pointer",
-  },
-  gridWrap: {
-  maxWidth: 980,
-  margin: "16px auto 0",
-  display: "flex",
-  justifyContent: "center",
-},
-
-tileGrid: {
-  display: "grid",
-  gridTemplateColumns: "repeat(4, 1fr)",  
-  gap: 22,
-  justifyItems: "center",
-},
-
-tileLink: {
-  textDecoration: "none",
-  color: "inherit",
-  width: "100%",
-  maxWidth: 180,                           // <-- prevents squeezing into 6 columns
-  display: "flex",
-  justifyContent: "center",
-},
-
-  tileFrame: {
-  width: 190,
-  height: 190,
-  borderRadius: 999,
-  overflow: "hidden",
-  display: "flex",
-  alignItems: "center",
-  justifyContent: "center",
-  background: "transparent",
-},
-
-
-
-
-
-
-logo: {
-  background: "transparent",
-  boxShadow: "none",
-  padding: 0,
-  borderRadius: 0,
-
-  filter: "drop-shadow(0 10px 25px rgba(0,0,0,0.10))",
-  mixBlendMode: "multiply",
-},
-
-tileImg: {
-  width: "100%",
-  height: "100%",
-  objectFit: "contain",
-  filter: "none",
-
-  // THIS is the fix:
-  // it clips the PNG to a perfect circle so no stray bits can show.
-  clipPath: "circle(32% at 50% 50%)",
-},
-
-
-};
