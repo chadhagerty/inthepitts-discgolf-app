@@ -186,12 +186,20 @@ export default function Page() {
 
 
 
-        .tileImg{
-          width:92%;
-          height:92%;
-          object-fit: "contain";
-          display: "block";
-        }
+        tileImg: {
+  width: "100%",
+  height: "100%",
+  objectFit: "contain",
+
+  // Safari-safe masking (THIS fixes bleed)
+  WebkitMaskImage: "radial-gradient(circle at center, black 60%, transparent 61%)",
+  maskImage: "radial-gradient(circle at center, black 60%, transparent 61%)",
+  WebkitMaskRepeat: "no-repeat",
+  maskRepeat: "no-repeat",
+  WebkitMaskSize: "contain",
+  maskSize: "contain",
+},
+
       `
     
     }</style>
