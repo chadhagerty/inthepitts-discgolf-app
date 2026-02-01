@@ -2,8 +2,9 @@ from PIL import Image, ImageDraw
 import os
 
 SRC_DIR = "public/tile-icons"
+OUT_DIR = "public/tile-icons"
 
-FILES = [
+ALLOW = [
     "checkin.png",
     "membership.png",
     "events.png",
@@ -17,35 +18,51 @@ FILES = [
     "dgv.png",
 ]
 
-OUT_SIZE = 1024  # crisp
-def to_square_center(im: Image.Image) -> Image.Image:
+OUT_SIZE = 1024  # high-res output for clean downscaling on phones
+RADIUS = int(OUT_SIZE * 0.46)  # circle radius
+CENTER = OUT_SIZE // 2
+
+def make_circle_mask(size):
+    mask = Image.new("L", (size, size), 0)
+    d = ImageDraw.Draw(mask)
+    d.ellipse((CENTER - RADIUS, CENTER - RADIUS, CENTER + RADIUS, CENTER + RADIUS), fill=255)
+    return mask
+
+def contain_fit(im, size):
+    # Fit image inside square without cropping (keeps your exact artwork)
+    im = im.convert("RGBA")
     w, h = im.size
-    s = min(w, h)
-    left = (w - s) // 2
-    top = (h - s) // 2
-    return im.crop((left, top, left + s, top + s))
+    scale = min(size / w, size / h)
+    nw, nh = int(w * scale), int(h * scale)
+    return im.resize((nw, nh), Image.LANCZOS)
 
 def main():
-    for fn in FILES:
-        path = os.path.join(SRC_DIR, fn)
-        if not os.path.exists(path):
-            print("Missing:", path)
+    os.makedirs(OUT_DIR, exist_ok=True)
+    mask = make_circle_mask(OUT_SIZE)
+
+    for fn in ALLOW:
+        src = os.path.join(SRC_DIR, fn)
+        if not os.path.exists(src):
+            print("Missing:", src)
             continue
 
-        im = Image.open(path).convert("RGBA")
-        im = to_square_center(im)
-        im = im.resize((OUT_SIZE, OUT_SIZE), Image.Resampling.LANCZOS)
+        im = Image.open(src).convert("RGBA")
 
-        # Hard circular alpha baked into PNG (no bleed possible)
-        mask = Image.new("L", (OUT_SIZE, OUT_SIZE), 0)
-        draw = ImageDraw.Draw(mask)
-        draw.ellipse((0, 0, OUT_SIZE, OUT_SIZE), fill=255)
+        # Build a brand new clean canvas each time
+        canvas = Image.new("RGBA", (OUT_SIZE, OUT_SIZE), (0, 0, 0, 0))
 
+        fitted = contain_fit(im, int(OUT_SIZE * 0.92))
+        x = (OUT_SIZE - fitted.width) // 2
+        y = (OUT_SIZE - fitted.height) // 2
+        canvas.alpha_composite(fitted, (x, y))
+
+        # HARD remove anything outside the circle
         out = Image.new("RGBA", (OUT_SIZE, OUT_SIZE), (0, 0, 0, 0))
-        out.paste(im, (0, 0), mask)
+        out.paste(canvas, (0, 0), mask)
 
-        out.save(path, "PNG")
-        print("Rebuilt:", path)
+        out_path = os.path.join(OUT_DIR, fn)
+        out.save(out_path, optimize=True)
+        print("Rebuilt:", out_path)
 
 if __name__ == "__main__":
     main()
