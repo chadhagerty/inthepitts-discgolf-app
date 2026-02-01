@@ -1,6 +1,13 @@
+import "./globals.css";
+
 export const viewport = {
   width: "device-width",
   initialScale: 1,
+};
+
+export const metadata = {
+  title: "In The Pitts Disc Golf",
+  description: "In The Pitts Disc Golf Course",
 };
 
 export default function RootLayout({ children }) {
