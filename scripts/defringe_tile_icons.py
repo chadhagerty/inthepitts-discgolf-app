@@ -1,8 +1,9 @@
+
 from PIL import Image, ImageDraw
 import os
 
 SRC_DIR = "public/tile-icons"
-OUT_SIZE = 512  # rebuild clean and consistent
+OUT_SIZE = 512
 
 ALLOW = {
     "checkin.png","membership.png","events.png","chat.png",
@@ -10,25 +11,20 @@ ALLOW = {
     "youtube.png","facebook.png","dgv.png",
 }
 
-# icons were clipped from a WHITE background originally
-MATTE = (255, 255, 255)
+MATTE = (0, 0, 0)  # <-- BLACK MATTE (this is the key)
 
 def center_crop_square(im):
     w, h = im.size
     s = min(w, h)
-    left = (w - s) // 2
-    top = (h - s) // 2
-    return im.crop((left, top, left + s, top + s))
+    return im.crop(((w-s)//2, (h-s)//2, (w+s)//2, (h+s)//2))
 
-def make_circle_alpha(size):
-    alpha = Image.new("L", (size, size), 0)
-    d = ImageDraw.Draw(alpha)
+def circle_alpha(size):
+    a = Image.new("L", (size, size), 0)
+    d = ImageDraw.Draw(a)
     d.ellipse((0, 0, size-1, size-1), fill=255)
-    return alpha
+    return a
 
-def defringe_white(im_rgba):
-    # removes white matte from semi-transparent edge pixels
-    im = im_rgba.copy()
+def defringe_black(im):
     px = im.load()
     w, h = im.size
     mr, mg, mb = MATTE
@@ -36,14 +32,12 @@ def defringe_white(im_rgba):
     for y in range(h):
         for x in range(w):
             r, g, b, a = px[x, y]
-            if a == 0:
-                continue
-            if a < 255:
+            if 0 < a < 255:
                 af = a / 255.0
-                r2 = int(round((r - mr*(1-af)) / af))
-                g2 = int(round((g - mg*(1-af)) / af))
-                b2 = int(round((b - mb*(1-af)) / af))
-                px[x, y] = (max(0,min(255,r2)), max(0,min(255,g2)), max(0,min(255,b2)), a)
+                r = int((r - mr*(1-af)) / af)
+                g = int((g - mg*(1-af)) / af)
+                b = int((b - mb*(1-af)) / af)
+                px[x, y] = (max(0,min(255,r)), max(0,min(255,g)), max(0,min(255,b)), a)
     return im
 
 def process(path):
@@ -51,12 +45,11 @@ def process(path):
     im = center_crop_square(im)
     im = im.resize((OUT_SIZE, OUT_SIZE), Image.Resampling.LANCZOS)
 
-    im = defringe_white(im)              # 1) FIX EDGE PIXELS
-    r, g, b, _a = im.split()
-    circle = make_circle_alpha(OUT_SIZE) # 2) TRUE CIRCLE ALPHA
-    out = Image.merge("RGBA", (r, g, b, circle))
+    im = defringe_black(im)           # REMOVE BLACK MATTE
+    r,g,b,_ = im.split()
+    im = Image.merge("RGBA", (r,g,b,circle_alpha(OUT_SIZE)))
 
-    out.save(path, optimize=True)
+    im.save(path, optimize=True)
     print("Fixed:", path)
 
 def main():
