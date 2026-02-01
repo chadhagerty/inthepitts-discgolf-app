@@ -18,8 +18,6 @@ FILES = [
 ]
 
 OUT_SIZE = 1024  # crisp
-R = OUT_SIZE // 2  # circle radius
-
 def to_square_center(im: Image.Image) -> Image.Image:
     w, h = im.size
     s = min(w, h)
@@ -38,7 +36,7 @@ def main():
         im = to_square_center(im)
         im = im.resize((OUT_SIZE, OUT_SIZE), Image.Resampling.LANCZOS)
 
-        # Hard circular mask baked into PNG alpha
+        # Hard circular alpha baked into PNG (no bleed possible)
         mask = Image.new("L", (OUT_SIZE, OUT_SIZE), 0)
         draw = ImageDraw.Draw(mask)
         draw.ellipse((0, 0, OUT_SIZE, OUT_SIZE), fill=255)
