@@ -3,88 +3,59 @@ import Link from "next/link";
 
 export const dynamic = "force-dynamic";
 
-/* -----------------------
-   HOME TILES
------------------------- */
 const tiles = [
-  { type: "internal", href: "/checkin", icon: "/tile-icons/checkin.png", label: "Check-In" },
+  // Row 1
+  { type: "internal", href: "/checkin", icon: "/tile-icons/checkin.png", label: "Course Check-In" },
   { type: "internal", href: "/memberships", icon: "/tile-icons/membership.png", label: "Membership" },
   { type: "internal", href: "/events", icon: "/tile-icons/events.png", label: "Events" },
   { type: "internal", href: "/chat", icon: "/tile-icons/chat.png", label: "Chat" },
 
+  // Row 2
   { type: "internal", href: "/stats", icon: "/tile-icons/stats.png", label: "Stats" },
   { type: "internal", href: "/leaderboard", icon: "/tile-icons/leaderboard.png", label: "Leaderboard" },
   { type: "internal", href: "/review", icon: "/tile-icons/reviews.png", label: "Reviews" },
   { type: "internal", href: "/sponsors", icon: "/tile-icons/sponsors.png", label: "Sponsors" },
 
+  // Row 3
   { type: "external", href: "https://www.youtube.com/@InThePittsDiscGolfCourse", icon: "/tile-icons/youtube.png", label: "YouTube" },
   { type: "external", href: "https://www.facebook.com/share/1D8MpvLLtv/", icon: "/tile-icons/facebook.png", label: "Facebook" },
   { type: "internal", href: "/dgv", icon: "/tile-icons/dgv.png", label: "Disc Golf Valley" },
 ];
 
-/* -----------------------
-   TILE (SVG-CLIPPED)
-   Safari-safe, zero bleed
------------------------- */
 function Tile({ t }) {
-  const id = `clip-${t.label.replace(/\s+/g, "")}`;
-
-  const icon = (
-    <svg width="190" height="190" viewBox="0 0 190 190">
-      <defs>
-        <clipPath id={id}>
-          <circle cx="95" cy="95" r="95" />
-        </clipPath>
-      </defs>
-
-      <image
-        href={t.icon}
-        width="190"
-        height="190"
-        preserveAspectRatio="xMidYMid slice"
-        clipPath={`url(#${id})`}
-      />
-    </svg>
+  const content = (
+    <span className="tileFrame">
+      <img className="tileImg" src={t.icon} alt={t.label} draggable={false} />
+    </span>
   );
 
   if (t.type === "external") {
     return (
-      <a href={t.href} target="_blank" rel="noreferrer" style={styles.tileLink}>
-        {icon}
+      <a href={t.href} target="_blank" rel="noreferrer" className="tileLink" aria-label={t.label}>
+        {content}
       </a>
     );
   }
 
   return (
-    <Link href={t.href} style={styles.tileLink}>
-      {icon}
+    <Link href={t.href} className="tileLink" aria-label={t.label}>
+      {content}
     </Link>
   );
 }
 
-/* -----------------------
-   PAGE
------------------------- */
 export default function Page() {
   return (
     <main style={styles.page}>
       <section style={styles.hero}>
-        <Image
-          src="/logo.png"
-          alt="In The Pitts Disc Golf"
-          width={240}
-          height={240}
-          priority
-          style={styles.logo}
-        />
+        <Image src="/logo.png" alt="In The Pitts Disc Golf" width={240} height={240} priority style={styles.logo} />
 
         <p style={styles.desc}>
-          A well-rounded 18-hole disc golf course with wooded and open holes,
-          short technical forest shots, long bombers, and even a friendly donkey
-          at Hole 6.
+          A well rounded 18 hole course with both wooded and open holes. Great for the beginner or seasoned vet,
+          features some short forest holes and some long bombers. Say hello to the friendly donkey at hole 6 tee pad.
         </p>
 
-        <Link href="/course">
+        <Link href="/course" style={{ textDecoration: "none" }}>
           <button style={styles.primaryBtn}>Hole Layout</button>
         </Link>
       </section>
@@ -100,40 +71,41 @@ export default function Page() {
   );
 }
 
-/* -----------------------
-   STYLES
------------------------- */
 const styles = {
   page: {
     minHeight: "100vh",
     padding: "20px 14px 44px",
+    backgroundColor: "#ffffff00",
     backgroundImage: `
-      radial-gradient(900px 500px at 15% -10%, rgba(239,68,68,0.05), transparent 60%),
+      radial-gradient(900px 500px at 15% -10%, rgba(239, 68, 68, 0.03), transparent 60%),
       radial-gradient(900px 500px at 85% 10%, rgba(255,255,255,0.08), transparent 55%),
-      radial-gradient(700px 450px at 50% 110%, rgba(34,197,94,0.15), transparent 55%)
+      radial-gradient(700px 450px at 50% 110%, rgba(34,197,94,0.18), transparent 55%)
     `,
   },
-
   hero: {
     display: "flex",
     flexDirection: "column",
     alignItems: "center",
-    marginBottom: 28,
+    background: "transparent",
+    padding: 0,
+    marginBottom: 24,
+    textAlign: "center",
   },
-
   logo: {
     background: "transparent",
     boxShadow: "none",
-    filter: "drop-shadow(0 10px 25px rgba(0,0,0,0.12))",
+    padding: 0,
+    borderRadius: 0,
+    filter: "drop-shadow(0 10px 25px rgba(0,0,0,0.10))",
+    mixBlendMode: "multiply",
   },
-
   desc: {
-    maxWidth: 720,
-    margin: "12px auto",
+    maxWidth: 700,
+    margin: "10px auto",
     fontSize: 15,
-    textAlign: "center",
+    lineHeight: 1.45,
+    color: "#1f2937",
   },
-
   primaryBtn: {
     marginTop: 10,
     padding: "10px 16px",
@@ -143,17 +115,10 @@ const styles = {
     fontWeight: 700,
     cursor: "pointer",
   },
-
   gridWrap: {
     maxWidth: 980,
-    margin: "0 auto",
-  },
-
-  tileLink: {
-    width: 190,
-    height: 190,
+    margin: "16px auto 0",
     display: "flex",
-    alignItems: "center",
     justifyContent: "center",
   },
 };
