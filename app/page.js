@@ -4,19 +4,19 @@ import Link from "next/link";
 export const dynamic = "force-dynamic";
 
 const tiles = [
-  { type: "internal", href: "/checkin", icon: "/tile-icons/checkin.png", label: "Course Check-In" },
-  { type: "internal", href: "/memberships", icon: "/tile-icons/membership.png", label: "Membership" },
-  { type: "internal", href: "/events", icon: "/tile-icons/events.png", label: "Events" },
-  { type: "internal", href: "/chat", icon: "/tile-icons/chat.png", label: "Chat" },
+  { type: "internal", href: "/checkin", icon: "/tile-icons/checkin.png?v=3", label: "Course Check-In" },
+  { type: "internal", href: "/memberships", icon: "/tile-icons/membership.png?v=3", label: "Membership" },
+  { type: "internal", href: "/events", icon: "/tile-icons/events.png?v=3", label: "Events" },
+  { type: "internal", href: "/chat", icon: "/tile-icons/chat.png?v=3", label: "Chat" },
 
-  { type: "internal", href: "/stats", icon: "/tile-icons/stats.png", label: "Stats" },
-  { type: "internal", href: "/leaderboard", icon: "/tile-icons/leaderboard.png", label: "Leaderboard" },
-  { type: "internal", href: "/review", icon: "/tile-icons/reviews.png", label: "Reviews" },
-  { type: "internal", href: "/sponsors", icon: "/tile-icons/sponsors.png", label: "Sponsors" },
+  { type: "internal", href: "/stats", icon: "/tile-icons/stats.png?v=3", label: "Stats" },
+  { type: "internal", href: "/leaderboard", icon: "/tile-icons/leaderboard.png?v=3", label: "Leaderboard" },
+  { type: "internal", href: "/review", icon: "/tile-icons/reviews.png?v=3", label: "Reviews" },
+  { type: "internal", href: "/sponsors", icon: "/tile-icons/sponsors.png?v=3", label: "Sponsors" },
 
-  { type: "external", href: "https://www.youtube.com/@InThePittsDiscGolfCourse", icon: "/tile-icons/youtube.png", label: "YouTube" },
-  { type: "external", href: "https://www.facebook.com/share/1D8MpvLLtv/", icon: "/tile-icons/facebook.png", label: "Facebook" },
-  { type: "internal", href: "/dgv", icon: "/tile-icons/dgv.png", label: "Disc Golf Valley" },
+  { type: "external", href: "https://www.youtube.com/@InThePittsDiscGolfCourse", icon: "/tile-icons/youtube.png?v=3", label: "YouTube" },
+  { type: "external", href: "https://www.facebook.com/share/1D8MpvLLtv/", icon: "/tile-icons/facebook.png?v=3", label: "Facebook" },
+  { type: "internal", href: "/dgv", icon: "/tile-icons/dgv.png?v=3", label: "Disc Golf Valley" },
 ];
 
 function safeId(label) {
@@ -26,7 +26,6 @@ function safeId(label) {
 function Tile({ t }) {
   const clipId = `clip-${safeId(t.label)}`;
 
-  // NOTE: slight zoom-in (1.08) pushes any dirty edge pixels outside the circle
   const icon = (
     <svg width="190" height="190" viewBox="0 0 190 190" style={{ display: "block" }}>
       <defs>
@@ -48,7 +47,13 @@ function Tile({ t }) {
 
   if (t.type === "external") {
     return (
-      <a href={t.href} target="_blank" rel="noreferrer" className="tileLink" aria-label={t.label}>
+      <a
+        href={t.href}
+        target="_blank"
+        rel="noreferrer"
+        className="tileLink"
+        aria-label={t.label}
+      >
         {icon}
       </a>
     );
@@ -60,6 +65,7 @@ function Tile({ t }) {
     </Link>
   );
 }
+
 
 export default function Page() {
   return (
