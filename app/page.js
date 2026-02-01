@@ -3,8 +3,11 @@ import Link from "next/link";
 
 export const dynamic = "force-dynamic";
 
+/* -----------------------
+   HOME TILES
+------------------------ */
 const tiles = [
-  { type: "internal", href: "/checkin", icon: "/tile-icons/checkin.png", label: "Course Check-In" },
+  { type: "internal", href: "/checkin", icon: "/tile-icons/checkin.png", label: "Check-In" },
   { type: "internal", href: "/memberships", icon: "/tile-icons/membership.png", label: "Membership" },
   { type: "internal", href: "/events", icon: "/tile-icons/events.png", label: "Events" },
   { type: "internal", href: "/chat", icon: "/tile-icons/chat.png", label: "Chat" },
@@ -19,36 +22,49 @@ const tiles = [
   { type: "internal", href: "/dgv", icon: "/tile-icons/dgv.png", label: "Disc Golf Valley" },
 ];
 
+/* -----------------------
+   TILE (SVG-CLIPPED)
+   Safari-safe, zero bleed
+------------------------ */
 function Tile({ t }) {
-  const content = (
-    <div style={styles.tileFrame}>
-      <Image
-        src={t.icon}
-        alt={t.label}
-        width={190}
-        height={190}
-        priority={false}
-        draggable={false}
-        style={styles.tileImg}
+  const id = `clip-${t.label.replace(/\s+/g, "")}`;
+
+  const icon = (
+    <svg width="190" height="190" viewBox="0 0 190 190">
+      <defs>
+        <clipPath id={id}>
+          <circle cx="95" cy="95" r="95" />
+        </clipPath>
+      </defs>
+
+      <image
+        href={t.icon}
+        width="190"
+        height="190"
+        preserveAspectRatio="xMidYMid slice"
+        clipPath={`url(#${id})`}
       />
-    </div>
+    </svg>
   );
 
   if (t.type === "external") {
     return (
       <a href={t.href} target="_blank" rel="noreferrer" style={styles.tileLink}>
-        {content}
+        {icon}
       </a>
     );
   }
 
   return (
     <Link href={t.href} style={styles.tileLink}>
-      {content}
+      {icon}
     </Link>
   );
 }
 
+/* -----------------------
+   PAGE
+------------------------ */
 export default function Page() {
   return (
     <main style={styles.page}>
@@ -63,8 +79,9 @@ export default function Page() {
         />
 
         <p style={styles.desc}>
-          A well rounded 18 hole course with both wooded and open holes. Great for the beginner or seasoned vet,
-          feature&apos;s some short forest holes and some long bombers. Say hello to the friendly donkey at hole 6 tee pad
+          A well-rounded 18-hole disc golf course with wooded and open holes,
+          short technical forest shots, long bombers, and even a friendly donkey
+          at Hole 6.
         </p>
 
         <Link href="/course">
@@ -73,7 +90,6 @@ export default function Page() {
       </section>
 
       <section style={styles.gridWrap}>
-        {/* grid behavior is controlled by CSS .tileGrid in globals.css */}
         <div className="tileGrid">
           {tiles.map((t) => (
             <Tile key={t.href} t={t} />
@@ -84,15 +100,17 @@ export default function Page() {
   );
 }
 
+/* -----------------------
+   STYLES
+------------------------ */
 const styles = {
   page: {
     minHeight: "100vh",
     padding: "20px 14px 44px",
-    backgroundColor: "#ffffff00",
     backgroundImage: `
-      radial-gradient(900px 500px at 15% -10%, rgba(239, 68, 68, 0.03), transparent 60%),
+      radial-gradient(900px 500px at 15% -10%, rgba(239,68,68,0.05), transparent 60%),
       radial-gradient(900px 500px at 85% 10%, rgba(255,255,255,0.08), transparent 55%),
-      radial-gradient(700px 450px at 50% 110%, rgba(34,197,94,0.18), transparent 55%)
+      radial-gradient(700px 450px at 50% 110%, rgba(34,197,94,0.15), transparent 55%)
     `,
   },
 
@@ -100,14 +118,18 @@ const styles = {
     display: "flex",
     flexDirection: "column",
     alignItems: "center",
+    marginBottom: 28,
+  },
+
+  logo: {
     background: "transparent",
-    padding: 0,
-    marginBottom: 24,
+    boxShadow: "none",
+    filter: "drop-shadow(0 10px 25px rgba(0,0,0,0.12))",
   },
 
   desc: {
-    maxWidth: 700,
-    margin: "10px auto",
+    maxWidth: 720,
+    margin: "12px auto",
     fontSize: 15,
     textAlign: "center",
   },
@@ -123,52 +145,15 @@ const styles = {
   },
 
   gridWrap: {
-    maxWidth: 1100,
-    margin: "16px auto 0",
-    display: "flex",
-    justifyContent: "center",
-    width: "100%",
+    maxWidth: 980,
+    margin: "0 auto",
   },
 
   tileLink: {
-    textDecoration: "none",
-    color: "inherit",
-    width: "100%",
-    maxWidth: 190,
-    display: "flex",
-    justifyContent: "center",
-  },
-
-  // This is what stops bleed (hard clip)
-  tileFrame: {
     width: 190,
     height: 190,
-    borderRadius: 999,
-    overflow: "hidden",
     display: "flex",
     alignItems: "center",
     justifyContent: "center",
-    background: "transparent",
-
-    WebkitMaskImage: "-webkit-radial-gradient(white, black)",
-transform: "translateZ(0)",
-
-  },
-
-  // cover (not contain) prevents transparent corners showing
-  tileImg: {
-    width: "100%",
-    height: "100%",
-    objectFit: "cover",
-    display: "block",
-  },
-
-  logo: {
-    background: "transparent",
-    boxShadow: "none",
-    padding: 0,
-    borderRadius: 0,
-    filter: "drop-shadow(0 10px 25px rgba(0,0,0,0.10))",
-    mixBlendMode: "multiply",
   },
 };
