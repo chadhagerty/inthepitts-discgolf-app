@@ -5,18 +5,19 @@ export const dynamic = "force-dynamic";
 
 const tiles = [
   { type: "internal", href: "/checkin", icon: "/tile-icons/checkin.png?v=3", label: "Course Check-In" },
-  { type: "internal", href: "/memberships", icon: "/tile-icons/membership.png?v=3", label: "Membership" },
+  { type: "internal", href: "/memberships", icon: "/tile-icons/membership.png?v=3", label: "Membership", zoom: 0.98 },
   { type: "internal", href: "/events", icon: "/tile-icons/events.png?v=3", label: "Events" },
-  { type: "internal", href: "/chat", icon: "/tile-icons/chat.png?v=3", label: "Chat" },
+  { type: "internal", href: "/chat", icon: "/tile-icons/chat.png?v=3", label: "Chat", zoom: 0.93 },
 
-  { type: "internal", href: "/stats", icon: "/tile-icons/stats.png?v=3", label: "Stats" },
-  { type: "internal", href: "/leaderboard", icon: "/tile-icons/leaderboard.png?v=3", label: "Leaderboard" },
-  { type: "internal", href: "/review", icon: "/tile-icons/reviews.png?v=3", label: "Reviews" },
+  { type: "internal", href: "/stats", icon: "/tile-icons/stats.png?v=3", label: "Stats", zoom: 0.88 },
+  { type: "internal", href: "/leaderboard", icon: "/tile-icons/leaderboard.png?v=3", label: "Leaderboard", zoom: 1.08 },
+  { type: "internal", href: "/review", icon: "/tile-icons/reviews.png?v=3", label: "Reviews", zoom: 1.04 },
   { type: "internal", href: "/sponsors", icon: "/tile-icons/sponsors.png?v=3", label: "Sponsors" },
 
   { type: "external", href: "https://www.youtube.com/@InThePittsDiscGolfCourse", icon: "/tile-icons/youtube.png?v=3", label: "YouTube" },
   { type: "external", href: "https://www.facebook.com/share/1D8MpvLLtv/", icon: "/tile-icons/facebook.png?v=3", label: "Facebook" },
-  { type: "internal", href: "/dgv", icon: "/tile-icons/dgv.png?v=3", label: "Disc Golf Valley" },
+  { type: "internal", href: "/dgv", icon: "/tile-icons/dgv.png?v=3", label: "Disc Golf Valley", zoom: 1.03 },
+  { type: "internal", href: "/the-game", icon: "/tile-icons/ITP_Game.png?v=3", label: "In The Pitts – The Game", zoom:1.03 },
 ];
 
 function safeId(label) {
@@ -24,7 +25,8 @@ function safeId(label) {
 }
 
 function Tile({ t }) {
-  const clipId = `clip-${safeId(t.label)}`;
+  const clipId = `clip-${safeId(t.label)}-${safeId(t.href)}`;
+  const zoom = t.zoom ?? 1;
 
   const icon = (
     <svg width="190" height="190" viewBox="0 0 190 190" style={{ display: "block" }}>
@@ -38,9 +40,9 @@ function Tile({ t }) {
         href={t.icon}
         width="190"
         height="190"
-        preserveAspectRatio="xMidYMid slice"
+        preserveAspectRatio="xMidYMid meet"
         clipPath={`url(#${clipId})`}
-        transform="translate(95 95) scale(1.08) translate(-95 -95)"
+        
       />
     </svg>
   );
@@ -67,11 +69,19 @@ function Tile({ t }) {
 }
 
 
+
 export default function Page() {
   return (
     <main className="homePage">
       <section className="homeHero">
-        <Image src="/logo.png" alt="In The Pitts Disc Golf" width={240} height={240} priority className="homeLogo" />
+        <Image
+          src="/logo.png"
+          alt="In The Pitts Disc Golf"
+          width={240}
+          height={240}
+          priority
+          className="homeLogo"
+        />
 
         <p className="homeDesc">
           A well rounded 18 hole course with both wooded and open holes. Great for the beginner or seasoned vet,
