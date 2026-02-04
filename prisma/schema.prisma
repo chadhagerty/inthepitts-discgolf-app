@@ -4,13 +4,14 @@ generator client {
 
 datasource db {
   provider = "postgresql"
+  
 }
 
 model Member {
   id          String   @id @default(uuid())
   name        String
-  email       String?
-  membership  String   // "day" | "yearly"
+  email       String   @unique
+  membership  String   // "daypass" | "yearly"
   expiresAt   DateTime
   createdAt   DateTime @default(now())
   checkIns    CheckIn[]
