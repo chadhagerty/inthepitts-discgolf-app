@@ -1,0 +1,69 @@
+{
+  "id": "course.in-the-pitts",
+  "displayName": "In The Pitts Disc Golf Course",
+  "coursePackId": "coursepack.in-the-pitts.001",
+
+  "location": {
+    "name": "In The Pitts Disc Golf",
+    "city": null,
+    "province": null,
+    "country": "Canada"
+  },
+
+  "style": {
+    "environment": "stylized-3d",
+    "sourceReference": "drone-footage",
+    "visualPhilosophy": "Faithful to real layout with slight exaggeration for readability and fun."
+  },
+
+  "holesTotal": 18,
+
+  "defaultRules": {
+    "scoring": "stroke-play",
+    "obPenalty": "+1",
+    "rethrowFromPreviousLie": true
+  },
+
+  "holeOrder": [
+    "hole-01",
+    "hole-02",
+    "hole-03",
+    "hole-04",
+    "hole-05",
+    "hole-06",
+    "hole-07",
+    "hole-08",
+    "hole-09",
+    "hole-10",
+    "hole-11",
+    "hole-12",
+    "hole-13",
+    "hole-14",
+    "hole-15",
+    "hole-16",
+    "hole-17",
+    "hole-18"
+  ],
+
+  "sponsors": {
+    "enabled": true,
+    "displayTiming": "pre-hole-drone-flyover",
+    "notes": "Sponsors are shown briefly before each hole in a consistent, non-intrusive manner."
+  },
+
+  "credits": {
+    "earnEnabled": true,
+    "redemptionCourseId": "course.in-the-pitts",
+    "notes": "Credits earned in-game may be redeemed to play this real-world course."
+  },
+
+  "audio": {
+    "ambience": "outdoor-wooded",
+    "notes": "Ambient sounds match a real disc golf course environment."
+  },
+
+  "notes": [
+    "This is the flagship course and always unlocked.",
+    "Hole 6 contains a canon donkey sound easter egg defined at the hole level."
+  ]
+}

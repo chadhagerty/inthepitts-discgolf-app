@@ -1,0 +1,88 @@
+{
+  "gameId": "in-the-pitts-disc-golf-the-game",
+  "displayName": "In The Pitts Disc Golf: The Game",
+  "version": "1.0.0",
+
+  "platform": "mobile",
+  "engineIntent": "hybrid-webgl-or-native",
+
+  "physics": {
+    "style": "hybrid",
+    "description": "Skill-based, Disc Golf Valley–style physics. Readable flights, fair outcomes.",
+    "wind": {
+      "enabled": true,
+      "minStrength": 0,
+      "maxStrength": 8,
+      "gustsEnabled": false
+    },
+    "groundInteraction": {
+      "skip": true,
+      "roll": true,
+      "stickOnSoftGround": true
+    }
+  },
+
+  "bag": {
+    "discLimit": 6,
+    "lockDuringRound": true
+  },
+
+  "branding": {
+    "primaryBrand": "In The Pitts",
+    "discBranding": "in-the-pitts-text-logo",
+    "tone": ["authentic", "playful"],
+    "notes": "Realistic disc golf presentation with rare, intentional easter eggs."
+  },
+
+  "courses": {
+    "architecture": "course-pack",
+    "flagshipCoursePackId": "coursepack.in-the-pitts.001",
+    "allowExpansion": true
+  },
+
+  "features": {
+    "stats": {
+      "enabled": true,
+      "trackAces": true,
+      "trackBestRounds": true
+    },
+    "leaderboards": {
+      "enabled": false,
+      "futureReady": true
+    },
+    "sponsorPreHole": {
+      "enabled": true,
+      "defaultDurationSeconds": 4,
+      "skippableAfterSeconds": 2
+    },
+    "credits": {
+      "enabled": true,
+      "redeemableForRealWorldPlay": true
+    }
+  },
+
+  "audio": {
+    "global": {
+      "throwSounds": true,
+      "chains": true,
+      "windAmbience": true
+    },
+    "easterEggs": [
+      {
+        "id": "donkey-hole-6",
+        "courseId": "course.in-the-pitts",
+        "holeNumber": 6,
+        "trigger": "beforeFirstThrow",
+        "asset": "audio/donkey.mp3",
+        "canon": true
+      }
+    ]
+  },
+
+  "nonGoals": [
+    "hyper-realistic simulator physics",
+    "pay-to-win mechanics",
+    "intrusive or unskippable ads",
+    "gambling or loot-box systems"
+  ]
+}
