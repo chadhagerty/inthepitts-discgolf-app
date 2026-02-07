@@ -1,0 +1,13 @@
+{
+  "id": "hole-10",
+  "number": 10,
+  "par": {
+    "red": 4,
+    "blue": 3
+  },
+  "distance": {
+    "red": 175,
+    "blue": 175
+  },
+  "description": "Sharp 90-degree turn about 75 ft off the tee. Hanging basket."
+}

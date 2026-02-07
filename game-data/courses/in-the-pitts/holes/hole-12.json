@@ -1,0 +1,13 @@
+{
+  "id": "hole-12",
+  "number": 12,
+  "par": {
+    "red": 4,
+    "blue": 4
+  },
+  "distance": {
+    "red": 334,
+    "blue": 402
+  },
+  "description": "Left-fading shot with elevation through a narrow fairway."
+}

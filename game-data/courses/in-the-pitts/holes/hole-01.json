@@ -1,0 +1,13 @@
+{
+  "id": "hole-01",
+  "number": 1,
+  "par": {
+    "red": 3,
+    "blue": 3
+  },
+  "distance": {
+    "red": 186,
+    "blue": 261
+  },
+  "description": "Open shot with a slight dogleg right from the top of a hill. Hazard at the bottom left of the hill."
+}

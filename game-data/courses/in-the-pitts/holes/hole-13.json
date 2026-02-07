@@ -1,0 +1,13 @@
+{
+  "id": "hole-13",
+  "number": 13,
+  "par": {
+    "red": 4,
+    "blue": 3
+  },
+  "distance": {
+    "red": 377,
+    "blue": 377
+  },
+  "description": "Bomb shot with a slight left fade."
+}

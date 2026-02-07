@@ -1,0 +1,13 @@
+{
+  "id": "hole-02",
+  "number": 2,
+  "par": {
+    "red": 3,
+    "blue": 3
+  },
+  "distance": {
+    "red": 169,
+    "blue": 169
+  },
+  "description": "Tight wooded fairway with a slight left fade at the end."
+}

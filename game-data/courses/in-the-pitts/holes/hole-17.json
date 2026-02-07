@@ -1,0 +1,13 @@
+{
+  "id": "hole-17",
+  "number": 17,
+  "par": {
+    "red": 3,
+    "blue": 3
+  },
+  "distance": {
+    "red": 288,
+    "blue": 288
+  },
+  "description": "Straight shot to a basket on a slanted hill."
+}

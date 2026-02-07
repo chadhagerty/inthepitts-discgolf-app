@@ -1,0 +1,13 @@
+{
+  "id": "hole-11",
+  "number": 11,
+  "par": {
+    "red": 3,
+    "blue": 3
+  },
+  "distance": {
+    "red": 136,
+    "blue": 136
+  },
+  "description": "Island hole. Clear the stream or play your next shot from the tee."
+}

@@ -1,0 +1,16 @@
+{
+  "id": "hole-06",
+  "number": 6,
+  "par": {
+    "red": 4,
+    "blue": 4
+  },
+  "distance": {
+    "red": 343,
+    "blue": 343
+  },
+  "description": "Out-of-the-tunnel bomber. Narrow fairway with the basket behind two spruce trees.",
+  "audio": {
+    "easterEgg": "donkey"
+  }
+}
