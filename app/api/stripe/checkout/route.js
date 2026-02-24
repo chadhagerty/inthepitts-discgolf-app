@@ -3,11 +3,18 @@ import Stripe from "stripe";
 export const runtime = "nodejs";
 
 const secretKey = process.env.STRIPE_SECRET_KEY;
-if (!secretKey) {
-  throw new Error("Missing STRIPE_SECRET_KEY");
-}
+if (!secretKey) throw new Error("Missing STRIPE_SECRET_KEY");
 
 const stripe = new Stripe(secretKey);
+
+function getBaseUrl(req) {
+  // Works on Vercel + local: Stripe checkout POST comes from your site, so Origin is correct
+  const origin = req.headers.get("origin");
+  if (origin) return origin;
+
+  // Fallback if Origin is missing (rare)
+  return process.env.NEXT_PUBLIC_APP_URL || "http://localhost:3000";
+}
 
 export async function POST(req) {
   try {
@@ -26,12 +33,12 @@ export async function POST(req) {
       return Response.json({ error: "Missing price id" }, { status: 400 });
     }
 
-    const baseUrl = process.env.NEXT_PUBLIC_APP_URL || "http://localhost:3000";
+    const baseUrl = getBaseUrl(req);
 
     const session = await stripe.checkout.sessions.create({
       mode: "payment",
 
-      // ✅ ensures we get customer_details.email + name back in webhook
+      // ensures we get customer_details.email + name back in webhook
       customer_creation: "always",
       billing_address_collection: "auto",
 
