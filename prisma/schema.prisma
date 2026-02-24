@@ -4,23 +4,25 @@ generator client {
 
 datasource db {
   provider = "postgresql"
-  
 }
 
 model Member {
-  id          String   @id @default(uuid())
-  name        String
-  email       String   @unique
-  membership  String   // "daypass" | "yearly"
-  expiresAt   DateTime
-  createdAt   DateTime @default(now())
-  checkIns    CheckIn[]
+  id         String    @id @default(uuid())
+  name       String
+  email      String    @unique
+  membership String // "daypass" | "yearly"
+  expiresAt  DateTime
+  createdAt  DateTime  @default(now())
+  checkIns   CheckIn[]
+
+  stripeCustomerId String?  @unique
 }
 
 model CheckIn {
-  id        String   @id @default(uuid())
-  memberId  String?
-  member    Member?  @relation(fields: [memberId], references: [id])
-  createdAt DateTime @default(now())
-  source    String   // "manual" | "qr"
+  id              String   @id @default(uuid())
+  memberId        String?
+  member          Member?  @relation(fields: [memberId], references: [id])
+  createdAt       DateTime @default(now())
+  source          String // "manual" | "qr" | "stripe" | "stripe_yearly"
+  stripeSessionId String?  @unique
 }

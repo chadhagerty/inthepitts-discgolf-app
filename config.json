@@ -1,0 +1,15 @@
+[33m27fbfdb[m[33m ([m[1;36mHEAD[m[33m -> [m[1;32mmain[m[33m, [m[1;31morigin/main[m[33m, [m[1;31morigin/HEAD[m[33m)[m Init database schema
+[33maa8cd60[m Fix mobile tile overlap by constraining tile width
+[33mf5324a8[m Normalize tile icons and remove per-icon zoom
+[33m7cb4f69[m Add files via upload
+[33m8209f82[m Remove black matte + rebuild clean circular tile icons
+[33mdb576a7[m Defringe tile icons (remove white matte) + rebuild clean circular PNGs
+[33mcb0cc54[m Rebuild tile icons as true circular PNGs (no bleed)
+[33ma7099b7[m Fix Tile() render + cache-bust sponsors icon
+[33mba50b98[m Rebuild tile icons as clean individual PNGs (hard circle, no bleed)
+[33m294cd53[m Stop icon bleed with SVG clip + lock responsive grid
+[33m07fee88[m Fix tile bleed via hard clip + slight zoom (Safari safe)
+[33m4692cb3[m Rebuild tile icons as true single-image PNGs (no bleed)
+[33m2777953[m Rebuild tile icons as true single-image PNGs (no bleed)
+[33m397437a[m Bake circular mask into tile icons to stop bleed
+[33m4e4a40d[m Replace homepage tiles with SVG-clipped icons (Safari fix)

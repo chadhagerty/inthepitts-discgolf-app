@@ -1,13 +1,71 @@
 {
   "id": "hole-01",
   "number": 1,
-  "par": {
-    "red": 3,
-    "blue": 3
+  "name": "Hole 1",
+  "par": { "red": 3, "blue": 3 },
+  "distance": { "red": 186, "blue": 261 },
+  "description": "Mostly straight fairway. From the tee pad, the basket plays ~20 ft to the right. Basket is near the tree line on top of a small hill (~10 ft elevation gain). Hill begins roughly 30 ft before the basket. Left side at the bottom of the hill is a bordered sand hazard. A large clump of trees on the right slightly hides the basket.",
+  "sponsorName": "Wicks Contracting",
+
+  "hazards": [
+    {
+      "type": "sand",
+      "side": "left",
+      "zone": "bottom-of-hill",
+      "border": "fallen-trees",
+      "rule": {
+        "penaltyStrokes": 1,
+        "playFromWhereItLies": true,
+        "rethrowFromPreviousLie": false
+      }
+    }
+  ],
+
+  "terrainNotes": {
+    "teePad": "Rubber on sand; approx. 3 ft behind and just right of the tee sign",
+    "basketPlacement": "Near tree line at top of hill",
+    "elevation": {
+      "riseFeetApprox": 10,
+      "hillStartsFeetFromBasketApprox": 30
+    },
+    "obstructions": ["Right-side tree clump slightly blocks/frames basket line"]
   },
-  "distance": {
-    "red": 186,
-    "blue": 261
+
+  "drone": {
+    "notes": "Blue tee uses a different drone video than red.",
+    "redVideoUrl": "https://youtu.be/esABGjcpnZs?feature=shared",
+    "blueVideoUrl": "https://youtu.be/_kqUIUMXd8s?feature=shared"
   },
-  "description": "Open shot with a slight dogleg right from the top of a hill. Hazard at the bottom left of the hill."
+
+"layoutCanvas": {
+  "fairwayWidthFt": 60,
+  "red": {
+    "lengthFt": 186,
+    "basketOffsetRightFt": 20,
+    "hazardLeft": {
+      "startFt": 120,
+      "lengthFt": 25,
+      "bitesIntoFairwayFt": 22
+    },
+    "hill": { "startsFeetFromBasketApprox": 30, "riseFtApprox": 10 },
+    
+    "treeClumpRight": {
+      "startFt": 165,
+      "lengthFt": 10,
+      "rightInsetIntoFairwayFt": 18
+    },
+    "forestBehindBasket": {
+      "depthFt": 40
+    }
+  },
+  "blue": {
+      "lengthFt": 261,
+      "basketOffsetRightFt": 20,
+      "hazardLeft": { "startFt": 120, "lengthFt": 25, "bitesIntoFairwayFt": 22 },
+      "treeClumpRight": { "startFt": 110, "lengthFt": 60, "rightInsetIntoFairwayFt": 18 },
+      "hill": { "startsFeetFromBasketApprox": 30, "riseFtApprox": 10 },
+      "doglegFeel": { "bendStartFtApprox": 70, "bendSeverity01": 0.45 },
+      "forestBehindBasket": { "depthFt": 40, "insetLeftFt": 0, "insetRightFt": 5, "density01": 0.9 }
+    }
+  }
 }

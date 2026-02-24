@@ -1,4 +1,18 @@
+"use client";
+
 import Link from "next/link";
+
+async function startCheckout(mode) {
+  const res = await fetch("/api/stripe/checkout", {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({ mode }), // "membership" | "daypass"
+  });
+
+  const data = await res.json();
+  if (data?.url) window.location.href = data.url;
+  else alert(data?.error || "Checkout failed");
+}
 
 export default function MembershipsPage() {
   return (
@@ -11,8 +25,18 @@ export default function MembershipsPage() {
         Yearly Membership: <strong>$100</strong>
       </p>
 
-      <p style={{ marginTop: 12 }}>
-        Pay by e-transfer: <strong>inthepittsdiscgolf@gmail.com</strong>
+      <div style={{ display: "flex", gap: 12, flexWrap: "wrap", marginTop: 16 }}>
+        <button onClick={() => startCheckout("daypass")} style={{ padding: "10px 14px", fontWeight: 700 }}>
+          Buy Day Pass
+        </button>
+
+        <button onClick={() => startCheckout("membership")} style={{ padding: "10px 14px", fontWeight: 700 }}>
+          Buy Yearly Membership
+        </button>
+      </div>
+
+      <p style={{ marginTop: 16 }}>
+        Or pay by e-transfer: <strong>inthepittsdiscgolf@gmail.com</strong>
       </p>
 
       <div style={{ marginTop: 20 }}>

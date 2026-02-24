@@ -27,7 +27,7 @@ const sponsors = [
     logo: "/sponsors/jayz_automotive_service.png",
   },
 
-  { name: "OYYC", href: "https://www.facebook.com/OYYC", logo: "/sponsors/oyyc.png" },
+  { name: "SouthEastern Group", href: "https://www.southeasterngroupinc.ca", logo: "/sponsors/southeastern_group.png" },
   { name: "Nick Hogan Trucking (NHT Excavations)", href: "https://www.facebook.com/NHTExcavations", logo: "/sponsors/nht_excavations.png" },
 
   {

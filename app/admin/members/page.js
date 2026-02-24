@@ -1,225 +1,189 @@
-"use client";
-
-import { useEffect, useState } from "react";
 import Link from "next/link";
+import { getPrisma } from "@/lib/prisma";
 
-export default function AdminMembersPage() {
-  const [key, setKey] = useState("");
-  const [data, setData] = useState(null); // { ok, count, members } or { ok:false, error }
-  const [loading, setLoading] = useState(false);
+export const runtime = "nodejs";
 
-  const [name, setName] = useState("");
-  const [membership, setMembership] = useState("yearly");
-  const [expiresAt, setExpiresAt] = useState(""); // YYYY-MM-DD
-
-  useEffect(() => {
-    const saved = localStorage.getItem("ADMIN_KEY") || "";
-    if (saved) setKey(saved);
-  }, []);
-
-  async function load() {
-    setLoading(true);
-    setData(null);
-
-    try {
-      const res = await fetch("/api/members", {
-        headers: { Authorization: `Bearer ${key}` },
-      });
-
-      const json = await res.json().catch(() => ({}));
-      setData(json);
-      localStorage.setItem("ADMIN_KEY", key);
-    } catch {
-      setData({ ok: false, error: "network-error" });
-    } finally {
-      setLoading(false);
-    }
+function fmtToronto(d) {
+  if (!d) return "";
+  try {
+    return new Date(d).toLocaleString("en-CA", { timeZone: "America/Toronto" });
+  } catch {
+    return String(d);
   }
+}
 
-  async function addMember() {
-    if (!name.trim()) return;
-
-    setLoading(true);
-
-    try {
-      const payload = {
-        name: name.trim(),
-        membership: String(membership || "yearly"),
-      };
-
-      // optional
-      if (expiresAt.trim()) {
-        // API accepts Date parseable string
-        payload.expiresAt = `${expiresAt.trim()}T00:00:00.000Z`;
-      }
-
-      const res = await fetch("/api/members", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-          Authorization: `Bearer ${key}`,
-        },
-        body: JSON.stringify(payload),
-      });
-
-      const json = await res.json().catch(() => ({}));
-
-      if (!res.ok || json?.ok === false) {
-        setData(json?.ok === false ? json : { ok: false, error: "error" });
-        return;
-      }
-
-      setName("");
-      setExpiresAt("");
-      setMembership("yearly");
-      await load();
-    } catch {
-      setData({ ok: false, error: "network-error" });
-    } finally {
-      setLoading(false);
-    }
+function fmtTorontoDate(d) {
+  if (!d) return "";
+  try {
+    return new Date(d).toLocaleDateString("en-CA", { timeZone: "America/Toronto" });
+  } catch {
+    return String(d);
   }
+}
 
-  async function deleteMember(id) {
-    if (!confirm("Delete this member? (This also deletes their check-ins)")) return;
+function isExpired(expiresAt) {
+  if (!expiresAt) return true;
+  return new Date(expiresAt).getTime() < Date.now();
+}
 
-    setLoading(true);
+export default async function AdminMembersPage() {
+  const prisma = getPrisma();
 
-    try {
-      const res = await fetch(`/api/members?id=${encodeURIComponent(id)}`, {
-        method: "DELETE",
-        headers: { Authorization: `Bearer ${key}` },
-      });
-
-      const json = await res.json().catch(() => ({}));
-
-      if (!res.ok || json?.ok === false) {
-        setData(json?.ok === false ? json : { ok: false, error: "error" });
-        return;
-      }
-
-      await load();
-    } catch {
-      setData({ ok: false, error: "network-error" });
-    } finally {
-      setLoading(false);
-    }
-  }
+  const members = await prisma.member.findMany({
+    orderBy: [{ createdAt: "desc" }],
+    include: {
+      checkIns: {
+        orderBy: { createdAt: "desc" },
+        take: 1,
+      },
+    },
+  });
 
   return (
-    <main style={{ padding: "2rem", maxWidth: 1000, margin: "0 auto" }}>
-      <h1>Admin: Members</h1>
+    <main style={{ padding: 24, maxWidth: 1100, margin: "0 auto" }}>
+      <div style={{ display: "flex", justifyContent: "space-between", gap: 12 }}>
+        <h1 style={{ margin: 0 }}>Admin: Members</h1>
+        <Link href="/admin" style={{ textDecoration: "underline" }}>
+          ← Admin Home
+        </Link>
+      </div>
 
-      <div style={{ marginTop: 10, display: "flex", gap: 12, flexWrap: "wrap" }}>
+      <p style={{ marginTop: 10, color: "#555" }}>
+        Total: <b>{members.length}</b>
+      </p>
+
+      <div style={{ overflowX: "auto", marginTop: 12 }}>
+        <table
+          style={{
+            width: "100%",
+            borderCollapse: "collapse",
+            minWidth: 980,
+          }}
+        >
+          <thead>
+            <tr>
+              {[
+                "Status",
+                "Name",
+                "Email",
+                "Membership",
+                "Expires",
+                "Created",
+                "Last check-in",
+                "Source",
+                "Stripe Customer",
+              ].map((h) => (
+                <th
+                  key={h}
+                  style={{
+                    textAlign: "left",
+                    borderBottom: "1px solid #ddd",
+                    padding: "10px 8px",
+                    fontSize: 13,
+                    color: "#444",
+                    whiteSpace: "nowrap",
+                  }}
+                >
+                  {h}
+                </th>
+              ))}
+            </tr>
+          </thead>
+
+          <tbody>
+            {members.map((m) => {
+              const last = m.checkIns?.[0] || null;
+              const expired = isExpired(m.expiresAt);
+
+              const statusText = expired ? "EXPIRED" : "ACTIVE";
+              const statusBg = expired ? "#ffe8e8" : "#e9f7ef";
+              const statusBorder = expired ? "#ffb3b3" : "#b9e4c9";
+
+              const isDayPass = (m.membership || "").toLowerCase() === "daypass";
+
+              return (
+                <tr key={m.id}>
+                  <td style={{ padding: "10px 8px", borderBottom: "1px solid #f0f0f0" }}>
+                    <span
+                      style={{
+                        display: "inline-block",
+                        padding: "2px 8px",
+                        borderRadius: 999,
+                        fontSize: 12,
+                        background: statusBg,
+                        border: `1px solid ${statusBorder}`,
+                        color: "#222",
+                        fontWeight: 700,
+                        letterSpacing: 0.2,
+                      }}
+                    >
+                      {statusText}
+                    </span>
+                  </td>
+
+                  <td style={{ padding: "10px 8px", borderBottom: "1px solid #f0f0f0" }}>
+                    {m.name}
+                  </td>
+
+                  <td style={{ padding: "10px 8px", borderBottom: "1px solid #f0f0f0" }}>
+                    {m.email}
+                  </td>
+
+                  <td style={{ padding: "10px 8px", borderBottom: "1px solid #f0f0f0" }}>
+                    <b>{m.membership}</b>
+                  </td>
+
+                  <td style={{ padding: "10px 8px", borderBottom: "1px solid #f0f0f0" }}>
+                    {isDayPass ? (
+                      <>
+                        <b>Today (Day Pass)</b>
+                        <div style={{ color: "#666", fontSize: 12 }}>
+                          {fmtToronto(m.expiresAt)}
+                        </div>
+                      </>
+                    ) : (
+                      fmtToronto(m.expiresAt)
+                    )}
+                  </td>
+
+                  <td style={{ padding: "10px 8px", borderBottom: "1px solid #f0f0f0" }}>
+                    {fmtToronto(m.createdAt)}
+                  </td>
+
+                  <td style={{ padding: "10px 8px", borderBottom: "1px solid #f0f0f0" }}>
+                    {last ? fmtToronto(last.createdAt) : "—"}
+                  </td>
+
+                  <td style={{ padding: "10px 8px", borderBottom: "1px solid #f0f0f0" }}>
+                    {last?.source || "—"}
+                  </td>
+
+                  <td
+                    style={{
+                      padding: "10px 8px",
+                      borderBottom: "1px solid #f0f0f0",
+                      fontFamily: "monospace",
+                      fontSize: 12,
+                    }}
+                  >
+                    {m.stripeCustomerId || "—"}
+                  </td>
+                </tr>
+              );
+            })}
+          </tbody>
+        </table>
+      </div>
+
+      <div style={{ marginTop: 18, display: "flex", gap: 14 }}>
         <Link href="/admin/checkins" style={{ textDecoration: "underline" }}>
-          Check-ins
+          View Check-ins →
         </Link>
-        <Link href="/" style={{ textDecoration: "underline" }}>
-          Home
-        </Link>
+
+        <span style={{ color: "#888" }}>
+          Times shown in <b>America/Toronto</b>
+        </span>
       </div>
-
-      <div style={{ marginTop: "1rem" }}>
-        <label style={{ display: "block", marginBottom: 6 }}>
-          Admin Key (paste exactly)
-        </label>
-        <input
-          value={key}
-          onChange={(e) => setKey(e.target.value)}
-          placeholder="chad-super-secret-2026-01"
-          style={{ padding: "0.5rem", width: "100%", maxWidth: 420 }}
-        />
-        <div style={{ marginTop: 10 }}>
-          <button onClick={load} disabled={loading || !key.trim()}>
-            {loading ? "Loading..." : "Load members"}
-          </button>
-        </div>
-      </div>
-
-      <hr style={{ margin: "1.5rem 0" }} />
-
-      <h2 style={{ marginBottom: 8 }}>Add member</h2>
-      <div style={{ display: "grid", gap: 10, maxWidth: 520 }}>
-        <input
-          value={name}
-          onChange={(e) => setName(e.target.value)}
-          placeholder="Member name"
-          style={{ padding: "0.5rem", width: "100%" }}
-        />
-
-        <select
-          value={membership}
-          onChange={(e) => setMembership(e.target.value)}
-          style={{ padding: "0.5rem", width: "100%" }}
-        >
-          <option value="yearly">yearly</option>
-          <option value="daypass">daypass</option>
-        </select>
-
-        <input
-          value={expiresAt}
-          onChange={(e) => setExpiresAt(e.target.value)}
-          placeholder="Expires (YYYY-MM-DD) — optional"
-          style={{ padding: "0.5rem", width: "100%" }}
-        />
-
-        <button
-          onClick={addMember}
-          disabled={loading || !key.trim() || !name.trim()}
-        >
-          {loading ? "Working..." : "Add member"}
-        </button>
-      </div>
-
-      {data?.ok === false && (
-        <p style={{ color: "red", marginTop: "1rem" }}>
-          ❌ {data?.error || "unauthorized"}
-        </p>
-      )}
-
-      {data?.ok && (
-        <div style={{ marginTop: "1.5rem" }}>
-          <p>
-            <strong>Total:</strong> {data.count}
-          </p>
-
-          <div style={{ display: "grid", gap: 12, marginTop: 12 }}>
-            {(data.members || []).map((m) => (
-              <div
-                key={m.id}
-                style={{
-                  border: "1px solid #ddd",
-                  borderRadius: 8,
-                  padding: 12,
-                  display: "flex",
-                  justifyContent: "space-between",
-                  alignItems: "center",
-                  gap: 12,
-                }}
-              >
-                <div>
-                  <div style={{ fontWeight: 700 }}>{m.name}</div>
-                  <div style={{ opacity: 0.85, fontSize: 14 }}>
-                    Membership: <strong>{m.membership || "yearly"}</strong>
-                  </div>
-                  <div style={{ opacity: 0.85, fontSize: 14 }}>
-                    Expires:{" "}
-                    <strong>
-                      {m.expiresAt ? new Date(m.expiresAt).toLocaleDateString() : "—"}
-                    </strong>
-                  </div>
-                </div>
-
-                <button onClick={() => deleteMember(m.id)} disabled={loading}>
-                  Delete
-                </button>
-              </div>
-            ))}
-
-            {data.count === 0 && <p style={{ opacity: 0.8 }}>No members yet.</p>}
-          </div>
-        </div>
-      )}
     </main>
   );
 }

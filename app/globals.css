@@ -53,7 +53,7 @@ body { position: relative; }
 }
 
 /* ===== HOME TILE GRID ===== */
-..tileGrid{
+.tileGrid{
   --gap: 16px;
   --pad: 12px;
 
@@ -108,5 +108,213 @@ body { position: relative; }
   display:block;
 }
 
+/* GAME SCREEN */
+
+.game-screen {
+  position: fixed;
+  inset: 0;
+  background: linear-gradient(to bottom, #1a1f2e, #0f121a);
+  color: white;
+  display: flex;
+  flex-direction: column;
+}
+
+.hud-top {
+  height: 60px;
+  background: rgba(0, 0, 0, 0.6);
+  backdrop-filter: blur(8px);
+  display: flex;
+  justify-content: space-around;
+  align-items: center;
+  font-weight: bold;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.play-area {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  font-size: 24px;
+}
+
+.disc-tray {
+  height: 90px;
+  background: rgba(0, 0, 0, 0.8);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 20px;
+  border-top: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.disc {
+  padding: 12px 20px;
+  background: #2b3247;
+  border-radius: 20px;
+  cursor: pointer;
+  transition: 0.2s ease;
+}
+
+.disc:hover {
+  background: #3d4563;
+}
+
+.throw-panel {
+  margin-top: 26px;
+  width: min(680px, 92vw);
+  background: rgba(0,0,0,0.35);
+  border: 1px solid rgba(255,255,255,0.10);
+  border-radius: 16px;
+  padding: 14px;
+}
+
+.power-meter {
+  height: 14px;
+  width: 100%;
+  border-radius: 999px;
+  background: rgba(255,255,255,0.10);
+  overflow: hidden;
+}
+
+.power-fill {
+  height: 100%;
+  border-radius: 999px;
+  background: rgba(76, 92, 255, 0.9);
+  transition: width 0.05s linear;
+}
+
+.throw-actions {
+  display: flex;
+  gap: 10px;
+  justify-content: center;
+  flex-wrap: wrap;
+}
+
+.btn-hold,
+.btn-throw,
+.btn-next {
+  border: 1px solid rgba(255,255,255,0.18);
+  background: rgba(255,255,255,0.10);
+  color: white;
+  padding: 12px 16px;
+  border-radius: 999px;
+  cursor: pointer;
+  font-weight: 800;
+  letter-spacing: 0.5px;
+}
+
+.btn-throw {
+  background: rgba(76, 92, 255, 0.35);
+}
+
+.btn-next:disabled {
+  opacity: 0.45;
+  cursor: not-allowed;
+}
+
+.btn-next {
+  border: 1px solid rgba(255,255,255,0.18);
+  background: rgba(255,255,255,0.10);
+  color: white;
+  padding: 12px 16px;
+  border-radius: 999px;
+  cursor: pointer;
+  font-weight: 900;
+  letter-spacing: 0.5px;
+}
 
 
+.throw-zone {
+  margin-top: 22px;
+  width: min(720px, 92vw);
+  height: 180px;
+  border-radius: 18px;
+  border: 1px solid rgba(255,255,255,0.12);
+  background: rgba(0,0,0,0.25);
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  padding: 14px;
+  user-select: none;
+  touch-action: none; /* important for mobile drag */
+}
+
+.throw-zone-hint {
+  text-align: center;
+  opacity: 0.85;
+  font-weight: 700;
+  margin-bottom: 12px;
+}
+
+
+.aim-strip {
+  margin-top: 14px;
+  width: min(740px, 92vw);
+  display: flex;
+  justify-content: center;
+  gap: 18px;
+  flex-wrap: wrap;
+  opacity: 0.95;
+  font-size: 13px;
+}
+
+.aim-meter {
+  position: relative;
+  margin-top: 12px;
+  height: 18px;
+  width: 100%;
+  border-radius: 999px;
+  background: rgba(255,255,255,0.08);
+  overflow: hidden;
+}
+
+.aim-center {
+  position: absolute;
+  left: 50%;
+  top: 0;
+  width: 2px;
+  height: 100%;
+  background: rgba(255,255,255,0.35);
+}
+
+.aim-dot {
+  position: absolute;
+  top: 50%;
+  transform: translate(-50%, -50%);
+  width: 10px;
+  height: 10px;
+  border-radius: 999px;
+  background: rgba(255,255,255,0.9);
+}
+
+.disc.active {
+  outline: 2px solid rgba(76, 92, 255, 0.9);
+}
+
+.status-strip {
+  margin-top: 18px;
+  width: min(760px, 92vw);
+  display: flex;
+  justify-content: center;
+  gap: 18px;
+  flex-wrap: wrap;
+  opacity: 0.95;
+  font-size: 13px;
+  background: rgba(0,0,0,0.18);
+  border: 1px solid rgba(255,255,255,0.10);
+  padding: 10px 12px;
+  border-radius: 14px;
+}
+
+.aim-strip {
+  margin-top: 14px;
+  width: min(760px, 92vw);
+  display: flex;
+  justify-content: center;
+  gap: 18px;
+  flex-wrap: wrap;
+  opacity: 0.95;
+  font-size: 13px;
+}

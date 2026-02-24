@@ -1,68 +1,129 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useMemo, useState } from "react";
+import { useSearchParams } from "next/navigation";
+import Link from "next/link";
 
-export default function CheckinPage() {
-  const [name, setName] = useState("");
-  const [status, setStatus] = useState(null); // {ok, message} or {ok:false,error}
+export default function CheckInPage() {
+  const sp = useSearchParams();
+  const hole = sp.get("hole") || "";
 
-  async function checkIn() {
+  const [email, setEmail] = useState("");
+  const [status, setStatus] = useState(null);
+  const [loading, setLoading] = useState(false);
+
+  const holeLabel = useMemo(() => (hole ? `Hole ${hole}` : "Course"), [hole]);
+
+  async function submit() {
+    const cleanEmail = (email || "").trim().toLowerCase();
+    if (!cleanEmail) return;
+
+    setLoading(true);
     setStatus(null);
-    const n = name.trim();
-    if (!n) return;
 
     try {
-      // NOTE: this assumes your existing check-in endpoint is /api/checkin or similar.
-      // If your current homepage uses a different endpoint, tell me the exact fetch URL
-      // and I’ll match it exactly.
       const res = await fetch("/api/check-in", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ name: n }),
+        body: JSON.stringify({
+          email: cleanEmail,
+          source: hole ? "qr" : "manual",
+          hole: hole || null, // accepted by API (not stored yet)
+        }),
       });
 
-      const json = await res.json().catch(() => ({}));
-      setStatus(json);
+      const data = await res.json().catch(() => ({}));
+
+      if (!res.ok) {
+        // Use server-provided message if available
+        throw new Error(data?.error || data?.message || "Check-in failed");
+      }
+
+      setStatus({
+        ok: true,
+        msg: data?.message || "Checked in!",
+        member: data?.member || null,
+      });
     } catch (e) {
-      setStatus({ ok: false, error: "network-error" });
+      setStatus({ ok: false, msg: e?.message || "Check-in failed" });
+    } finally {
+      setLoading(false);
     }
   }
 
   return (
-    <main style={{ padding: "2rem", maxWidth: 900, margin: "0 auto" }}>
-      <div style={{ display: "flex", gap: 12, flexWrap: "wrap" }}>
-        <a href="/" style={{ textDecoration: "underline" }}>← Dashboard</a>
-        <a href="/passes" style={{ textDecoration: "underline" }}>Passes</a>
-        <a href="/links" style={{ textDecoration: "underline" }}>Links</a>
-      </div>
+    <main style={{ padding: 24, maxWidth: 520, margin: "0 auto" }}>
+      <h1 style={{ marginTop: 0 }}>Check In</h1>
 
-      <h1 style={{ marginTop: 16 }}>Course Check-In</h1>
+      <p style={{ color: "#555" }}>
+        You’re checking in for <b>{holeLabel}</b>.
+      </p>
 
-      <div style={{ marginTop: 14 }}>
-        <label style={{ display: "block", marginBottom: 6 }}>Your name</label>
-        <input
-          value={name}
-          onChange={(e) => setName(e.target.value)}
-          placeholder="John Doe"
-          style={{ padding: "0.6rem", width: "100%", maxWidth: 420 }}
-        />
-        <div style={{ marginTop: 10 }}>
-          <button onClick={checkIn} disabled={!name.trim()}>
-            Check In
-          </button>
+      <label style={{ display: "block", marginTop: 16, fontWeight: 700 }}>
+        Email used for membership / day pass
+      </label>
+
+      <input
+        value={email}
+        onChange={(e) => setEmail(e.target.value)}
+        placeholder="johndoe@gmail.com"
+        inputMode="email"
+        autoCapitalize="none"
+        autoCorrect="off"
+        style={{
+          width: "100%",
+          padding: 12,
+          borderRadius: 10,
+          border: "1px solid #ccc",
+          marginTop: 8,
+        }}
+      />
+
+      <button
+        onClick={submit}
+        disabled={loading || !email.trim()}
+        style={{
+          marginTop: 14,
+          width: "100%",
+          padding: 12,
+          borderRadius: 12,
+          border: "1px solid #111",
+          background: loading ? "#eee" : "#111",
+          color: loading ? "#111" : "#fff",
+          fontWeight: 800,
+          cursor: loading ? "default" : "pointer",
+        }}
+      >
+        {loading ? "Checking..." : "Check In"}
+      </button>
+
+      {status && (
+        <div
+          style={{
+            marginTop: 14,
+            padding: 12,
+            borderRadius: 12,
+            border: "1px solid #ddd",
+            background: status.ok ? "#ecfdf5" : "#fef2f2",
+            color: status.ok ? "#065f46" : "#991b1b",
+            fontWeight: 700,
+          }}
+        >
+          <div>{status.msg}</div>
+
+          {status.ok && status.member?.name && (
+            <div style={{ marginTop: 6, fontWeight: 600, opacity: 0.9 }}>
+              {status.member.name} ({status.member.membership})
+            </div>
+          )}
         </div>
-      </div>
+      )}
 
-      {/* This is generic display. If your API returns different fields, we’ll tweak it. */}
-      {status?.ok === false && (
-        <p style={{ color: "crimson", marginTop: 14 }}>❌ {status.error || "Error"}</p>
-      )}
-      {status?.ok && (
-        <p style={{ color: "green", marginTop: 14 }}>✅ {status.message || "Welcome!"}</p>
-      )}
-      {!status && (
-        <p style={{ marginTop: 14, opacity: 0.8 }}>Not on the member list yet.</p>
-      )}
+      <div style={{ marginTop: 18 }}>
+        <Link href="/" style={{ textDecoration: "underline" }}>
+          ← Home
+        </Link>
+      </div>
     </main>
   );
 }
