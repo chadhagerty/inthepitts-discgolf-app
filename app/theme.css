@@ -1,0 +1,70 @@
+/* ===== In The Pitts Theme ===== */
+
+:root {
+  --itp-green-dark: #1f3a2d;
+  --itp-green-mid: #2f5c45;
+  --itp-green-light: #3f7a5c;
+
+  --itp-gold: #d4af37;
+  --itp-cream: #f5f2e8;
+
+  --itp-card: rgba(255,255,255,0.85);
+  --itp-shadow: 0 10px 25px rgba(0,0,0,0.15);
+}
+
+/* Page background */
+.itp-page {
+  min-height: 100vh;
+  background:
+    radial-gradient(circle at top, #2f5c45 0%, #1f3a2d 70%),
+    url("/tile-icons/bg-texture.png");
+  background-size: cover;
+  color: #111;
+  padding: 24px;
+}
+
+/* Card style */
+.itp-card {
+  background: var(--itp-card);
+  border-radius: 18px;
+  padding: 18px;
+  box-shadow: var(--itp-shadow);
+  margin-bottom: 18px;
+  backdrop-filter: blur(6px);
+}
+
+/* Header */
+.itp-title {
+  font-size: 28px;
+  font-weight: 900;
+  color: var(--itp-green-dark);
+  margin-bottom: 10px;
+}
+
+/* Buttons */
+.itp-btn {
+  background: linear-gradient(
+    180deg,
+    var(--itp-gold),
+    #b9972f
+  );
+  border: none;
+  border-radius: 14px;
+  padding: 12px 18px;
+  font-weight: 800;
+  cursor: pointer;
+  box-shadow: var(--itp-shadow);
+}
+
+.itp-btn:hover {
+  transform: translateY(-2px);
+}
+
+/* Inputs */
+.itp-input {
+  width: 100%;
+  padding: 12px;
+  border-radius: 12px;
+  border: 1px solid #ccc;
+  margin-top: 8px;
+}

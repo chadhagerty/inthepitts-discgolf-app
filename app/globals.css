@@ -1,3 +1,6 @@
+/* Hip but readable */
+@import url("https://fonts.googleapis.com/css2?family=Rubik:wght@400;600;800;900&display=swap");
+
 * { box-sizing: border-box; }
 html, body { margin: 0; padding: 0; width: 100%; overflow-x: hidden !important; }
 body { position: relative; }
@@ -315,3 +318,320 @@ body { position: relative; }
   opacity: 0.95;
   font-size: 13px;
 }
+
+/* ========= In The Pitts global look ========= */
+
+
+:root{
+  --itp-font: "Rubik", system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif;
+}
+
+html, body{
+  font-family: var(--itp-font);
+}
+
+/* ========= In The Pitts UI kit ========= */
+
+.itp-page{
+  min-height: 100vh;
+  padding: 22px;
+  position: relative;
+
+  background:
+    radial-gradient(1200px 600px at 20% 0%, rgba(34,197,94,0.22), transparent 55%),
+    radial-gradient(900px 500px at 90% 15%, rgba(16,185,129,0.18), transparent 55%),
+    linear-gradient(180deg, #0b1b12 0%, #0b1b12 40%, #07120c 100%);
+}
+
+/* Logo watermark everywhere */
+.itp-page::before{
+  content:"";
+  position: fixed;
+  inset: 0;
+  pointer-events: none;
+  opacity: 0.08;
+  background-image: url("/logo.png");
+  background-repeat: no-repeat;
+  background-size: 520px auto;
+  background-position: 85% 18%;
+  filter: drop-shadow(0 20px 40px rgba(0,0,0,0.35));
+}
+
+.itp-card{
+  max-width: 900px;
+  margin: 0 auto;
+  background: rgba(255,255,255,0.95);
+  border: 1px solid rgba(0,0,0,0.10);
+  border-radius: 18px;
+  padding: 18px;
+  box-shadow: 0 20px 60px rgba(0,0,0,0.35);
+  position: relative;
+}
+
+.itp-cardWide{ max-width: 980px; }
+
+.itp-headerRow{
+  display:flex;
+  justify-content:space-between;
+  align-items:flex-start;
+  gap:12px;
+  flex-wrap:wrap;
+}
+
+.itp-title{
+  margin:0;
+  font-size: 30px;
+  letter-spacing: -0.02em;
+}
+
+.itp-subtitle{
+  margin: 8px 0 0 0;
+  color:#334155;
+  font-weight: 600;
+}
+
+.itp-link{
+  text-decoration: underline;
+  font-weight: 900;
+  color:#0f172a;
+}
+
+.itp-badgesRow{
+  margin-top: 10px;
+  display:flex;
+  gap: 10px;
+  flex-wrap: wrap;
+}
+
+.itp-badge{
+  display:inline-flex;
+  gap: 6px;
+  align-items:center;
+  padding: 8px 10px;
+  border-radius: 999px;
+  border: 1px solid rgba(0,0,0,0.12);
+  background: rgba(245,158,11,0.16);
+  font-weight: 800;
+}
+
+.itp-badgeMuted{
+  display:inline-flex;
+  gap: 6px;
+  align-items:center;
+  padding: 8px 10px;
+  border-radius: 999px;
+  border: 1px solid rgba(0,0,0,0.10);
+  background: rgba(2,6,23,0.04);
+  font-weight: 800;
+  color: #0f172a;
+}
+
+.itp-panel{
+  margin-top: 14px;
+  border: 1px solid rgba(0,0,0,0.10);
+  border-radius: 16px;
+  padding: 14px;
+  background: rgba(255,255,255,0.7);
+}
+
+.itp-sectionTitle{
+  margin: 0 0 10px 0;
+  font-size: 18px;
+  font-weight: 900;
+}
+
+.itp-formGrid{ display:grid; gap: 10px; }
+.itp-field{ display:grid; gap: 6px; }
+
+.itp-label{
+  font-weight: 900;
+  color:#0f172a;
+}
+
+.itp-input, .itp-textarea{
+  width: 100%;
+  padding: 12px;
+  border-radius: 12px;
+  border: 1px solid rgba(0,0,0,0.18);
+  outline: none;
+  background: white;
+}
+
+.itp-input:focus, .itp-textarea:focus{
+  border-color: rgba(245,158,11,0.9);
+  box-shadow: 0 0 0 4px rgba(245,158,11,0.20);
+}
+
+.itp-textarea{ resize: vertical; }
+
+.itp-ratingsGrid{
+  display:grid;
+  gap: 12px;
+  margin-top: 8px;
+}
+
+.itp-ratingRow{ display:grid; gap: 6px; }
+
+.itp-ratingLabel{
+  font-weight: 900;
+  color:#0f172a;
+}
+
+.itp-starsRow{
+  display:flex;
+  gap: 6px;
+  align-items:center;
+  flex-wrap:wrap;
+}
+
+/* DISCS instead of stars */
+.itp-discBtn{
+  width: 40px;
+  height: 40px;
+  border-radius: 14px;
+  border: 1px solid rgba(0,0,0,0.18);
+  background: #fff;
+  font-weight: 900;
+  cursor:pointer;
+  transition: transform 120ms ease, box-shadow 120ms ease, background 120ms ease;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  font-size: 18px;
+}
+
+.itp-discBtn:hover{
+  transform: translateY(-1px);
+  box-shadow: 0 6px 18px rgba(0,0,0,0.12);
+}
+
+.itp-discBtn.isActive{
+  background: #111827;
+  border-color: #111827;
+  box-shadow: 0 10px 24px rgba(17,24,39,0.25);
+}
+
+/* make the emoji pop on dark button */
+.itp-discBtn.isActive{
+  filter: saturate(1.25) brightness(1.15);
+}
+
+.itp-starsValue{
+  margin-left: 6px;
+  font-weight: 900;
+}
+
+.itp-btn{
+  margin-top: 8px;
+  width: 100%;
+  padding: 12px;
+  border-radius: 14px;
+  border: 1px solid rgba(0,0,0,0.25);
+  background: linear-gradient(180deg, #fbbf24 0%, #f59e0b 100%);
+  color: #111827;
+  font-weight: 1000;
+  cursor:pointer;
+  box-shadow: 0 10px 20px rgba(245,158,11,0.25);
+}
+
+.itp-btn.isDisabled{
+  opacity: 0.55;
+  cursor: default;
+  box-shadow:none;
+}
+
+.itp-btnSecondary{
+  padding: 10px 12px;
+  border-radius: 12px;
+  border: 1px solid rgba(0,0,0,0.18);
+  background: #fff;
+  font-weight: 900;
+  cursor: pointer;
+}
+
+.itp-btnSecondary.isDisabled{
+  opacity: 0.6;
+  cursor: default;
+}
+
+.itp-alert{
+  padding: 12px;
+  border-radius: 14px;
+  border: 1px solid rgba(0,0,0,0.10);
+  font-weight: 900;
+}
+
+.itp-alert.ok{
+  background: #ecfdf5;
+  color: #065f46;
+}
+
+.itp-alert.bad{
+  background: #fef2f2;
+  color: #991b1b;
+}
+
+.itp-listHeader{
+  margin-top: 18px;
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+  gap:12px;
+}
+
+.itp-muted{
+  opacity: 0.75;
+  margin-top: 10px;
+  font-weight: 700;
+}
+
+.itp-list{
+  display:grid;
+  gap: 12px;
+  margin-top: 10px;
+}
+
+.itp-reviewCard{
+  border: 1px solid rgba(0,0,0,0.10);
+  border-radius: 16px;
+  padding: 14px;
+  background: rgba(255,255,255,0.9);
+}
+
+.itp-reviewTop{
+  display:flex;
+  justify-content:space-between;
+  gap:12px;
+  flex-wrap:wrap;
+}
+
+.itp-reviewName{ font-weight: 1000; }
+.itp-reviewAvg{ font-weight: 1000; opacity: 0.85; }
+
+.itp-reviewText{
+  margin-top: 8px;
+  white-space: pre-wrap;
+}
+
+.itp-reviewMeta{
+  margin-top: 10px;
+  display:grid;
+  gap:4px;
+  font-size: 13px;
+  opacity: 0.9;
+}
+
+.itp-ownerResponse{
+  margin-top: 12px;
+  border-top: 1px solid rgba(0,0,0,0.08);
+  padding-top: 10px;
+}
+
+.itp-ownerTitle{ font-weight: 1000; }
+
+.itp-ownerText{
+  margin-top: 6px;
+  white-space: pre-wrap;
+}
+
+.itp-footerRow{ margin-top: 18px; }

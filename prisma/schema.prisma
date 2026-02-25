@@ -65,3 +65,9 @@ model Review {
   @@index([createdAt])
   @@index([isDeleted, createdAt])
 }
+
+model StatsOverride {
+  key       String   @id
+  value     String
+  updatedAt DateTime @updatedAt
+}

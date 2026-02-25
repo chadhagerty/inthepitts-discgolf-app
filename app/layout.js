@@ -1,4 +1,6 @@
 import "./globals.css";
+import "./theme.css";
+
 
 export const viewport = {
   width: "device-width",
