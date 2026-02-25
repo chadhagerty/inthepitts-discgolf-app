@@ -34,9 +34,9 @@ export default function MembershipsPage() {
           Buy Yearly Membership
         </button>
       </div>
-
+ 
       <p style={{ marginTop: 16 }}>
-        Or pay by e-transfer: <strong>inthepittsdiscgolf@gmail.com</strong>
+        Or pay by e-transfer or cash (call ahead to get checked in 613-331-3462): <strong>inthepittsdiscgolf@gmail.com</strong>
       </p>
 
       <div style={{ marginTop: 20 }}>

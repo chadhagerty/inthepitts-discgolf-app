@@ -7,15 +7,15 @@ datasource db {
 }
 
 model Member {
-  id         String    @id @default(uuid())
-  name       String
-  email      String    @unique
-  membership String // "daypass" | "yearly"
-  expiresAt  DateTime
-  createdAt  DateTime  @default(now())
-  checkIns   CheckIn[]
+  id               String    @id @default(uuid())
+  name             String
+  email            String    @unique
+  membership       String    // "daypass" | "yearly"
+  expiresAt        DateTime
+  createdAt        DateTime  @default(now())
+  checkIns         CheckIn[]
 
-  stripeCustomerId String?  @unique
+  stripeCustomerId String?   @unique
 }
 
 model CheckIn {
@@ -23,6 +23,45 @@ model CheckIn {
   memberId        String?
   member          Member?  @relation(fields: [memberId], references: [id])
   createdAt       DateTime @default(now())
-  source          String // "manual" | "qr" | "stripe" | "stripe_yearly"
+  source          String   // "manual" | "qr" | "stripe"
   stripeSessionId String?  @unique
+}
+
+model ChatMessage {
+  id        String   @id @default(uuid())
+  name      String
+  message   String
+  createdAt DateTime @default(now())
+
+  @@index([createdAt])
+}
+
+model Review {
+  id            String   @id @default(uuid())
+  createdAt     DateTime @default(now())
+  updatedAt     DateTime @updatedAt
+
+  // one review per email
+  email         String   @unique
+  name          String
+  text          String
+
+  // rating categories (1–5)
+  overall       Int
+  upkeep        Int
+  shotSelection Int
+  signage       Int
+  app           Int
+  game          Int
+
+  // admin response (public)
+  ownerResponse String?
+  respondedAt   DateTime?
+
+  // moderation
+  isDeleted     Boolean  @default(false)
+  deletedAt     DateTime?
+
+  @@index([createdAt])
+  @@index([isDeleted, createdAt])
 }
