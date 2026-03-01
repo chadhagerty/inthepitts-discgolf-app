@@ -28,7 +28,7 @@ export default function CheckInClient() {
         body: JSON.stringify({
           email: cleanEmail,
           source: hole ? "qr" : "manual",
-          hole: hole || null, // accepted by API (not stored yet)
+          hole: hole || null,
         }),
       });
 
@@ -51,77 +51,144 @@ export default function CheckInClient() {
   }
 
   return (
-    <main style={{ padding: 24, maxWidth: 520, margin: "0 auto" }}>
-      <h1 style={{ marginTop: 0 }}>Check In</h1>
-
-      <p style={{ color: "#555" }}>
-        You’re checking in for <b>{holeLabel}</b>.
-      </p>
-
-      <label style={{ display: "block", marginTop: 16, fontWeight: 700 }}>
-        Email used for membership / day pass
-      </label>
-
-      <input
-        value={email}
-        onChange={(e) => setEmail(e.target.value)}
-        placeholder="johndoe@gmail.com"
-        inputMode="email"
-        autoCapitalize="none"
-        autoCorrect="off"
+    <main
+      style={{
+        minHeight: "100vh",
+        padding: 24,
+        background:
+          "radial-gradient(1200px 600px at 20% 0%, rgba(34,197,94,0.22), transparent 60%), radial-gradient(900px 500px at 90% 20%, rgba(16,185,129,0.18), transparent 55%), linear-gradient(180deg, #0b1b13, #0b1220)",
+      }}
+    >
+      <div
         style={{
-          width: "100%",
-          padding: 12,
-          borderRadius: 10,
-          border: "1px solid #ccc",
-          marginTop: 8,
-        }}
-      />
-
-      <button
-        onClick={submit}
-        disabled={loading || !email.trim()}
-        style={{
-          marginTop: 14,
-          width: "100%",
-          padding: 12,
-          borderRadius: 12,
-          border: "1px solid #111",
-          background: loading ? "#eee" : "#111",
-          color: loading ? "#111" : "#fff",
-          fontWeight: 800,
-          cursor: loading ? "default" : "pointer",
+          maxWidth: 560,
+          margin: "0 auto",
+          border: "1px solid rgba(255,255,255,0.10)",
+          background: "rgba(255,255,255,0.06)",
+          borderRadius: 18,
+          padding: 20,
+          boxShadow: "0 12px 40px rgba(0,0,0,0.25)",
         }}
       >
-        {loading ? "Checking..." : "Check In"}
-      </button>
-
-      {status && (
+        {/* HEADER */}
         <div
           style={{
-            marginTop: 14,
-            padding: 12,
-            borderRadius: 12,
-            border: "1px solid #ddd",
-            background: status.ok ? "#ecfdf5" : "#fef2f2",
-            color: status.ok ? "#065f46" : "#991b1b",
-            fontWeight: 700,
+            display: "flex",
+            justifyContent: "space-between",
+            alignItems: "center",
+            flexWrap: "wrap",
+            gap: 12,
           }}
         >
-          <div>{status.msg}</div>
+          <div style={{ display: "flex", alignItems: "center", gap: 14 }}>
+            {/* Bigger logo */}
+            <img
+              src="/logo.png"
+              alt="In The Pitts"
+              draggable={false}
+              style={{
+                width: 70,
+                height: 70,
+                borderRadius: 14,
+                border: "1px solid rgba(255,255,255,0.18)",
+                background: "rgba(0,0,0,0.2)",
+              }}
+            />
 
-          {status.ok && status.member?.name && (
-            <div style={{ marginTop: 6, fontWeight: 600, opacity: 0.9 }}>
-              {status.member.name} ({status.member.membership})
+            {/* Disc icon + title */}
+            <div style={{ display: "flex", alignItems: "center", gap: 8 }}>
+              <span style={{ fontSize: 26 }}>🥏</span>
+              <div>
+                <h1 style={{ margin: 0, color: "#eafff2" }}>Check In</h1>
+                <div style={{ color: "rgba(234,255,242,0.75)", fontWeight: 700 }}>
+                  {hole ? `You’re tapping in for Hole ${hole}.` : "You’re tapping in for the course."}
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <Link href="/" style={{ textDecoration: "underline", color: "#eafff2", fontWeight: 800 }}>
+            ← Home
+          </Link>
+        </div>
+
+        {/* BODY */}
+        <div
+          style={{
+            marginTop: 16,
+            border: "1px solid rgba(255,255,255,0.10)",
+            borderRadius: 14,
+            background: "rgba(0,0,0,0.18)",
+            padding: 16,
+          }}
+        >
+          <label style={{ display: "block", fontWeight: 900, color: "#eafff2" }}>
+            Email used when you registered or paid
+          </label>
+
+          <input
+            value={email}
+            onChange={(e) => setEmail(e.target.value)}
+            placeholder="johndoe@gmail.com"
+            inputMode="email"
+            autoCapitalize="none"
+            autoCorrect="off"
+            style={{
+              width: "100%",
+              padding: 12,
+              borderRadius: 12,
+              border: "1px solid rgba(255,255,255,0.14)",
+              marginTop: 8,
+              background: "rgba(255,255,255,0.06)",
+              color: "#eafff2",
+              outline: "none",
+            }}
+          />
+
+          <button
+            onClick={submit}
+            disabled={loading || !email.trim()}
+            style={{
+              marginTop: 14,
+              width: "100%",
+              padding: 14,
+              borderRadius: 12,
+              border: "1px solid rgba(255,255,255,0.18)",
+              background: loading || !email.trim()
+                ? "rgba(255,255,255,0.10)"
+                : "rgba(34,197,94,0.25)",
+              color: "#eafff2",
+              fontWeight: 900,
+              fontSize: 18,
+              cursor: loading || !email.trim() ? "default" : "pointer",
+            }}
+          >
+            {loading ? "Tapping..." : "Tap In 🥏"}
+          </button>
+
+          {status && (
+            <div
+              style={{
+                marginTop: 14,
+                padding: 12,
+                borderRadius: 12,
+                border: "1px solid rgba(255,255,255,0.12)",
+                background: status.ok
+                  ? "rgba(34,197,94,0.16)"
+                  : "rgba(239,68,68,0.16)",
+                color: status.ok ? "#d1fae5" : "#fee2e2",
+                fontWeight: 800,
+              }}
+            >
+              <div>{status.msg}</div>
+              {status.ok && status.member?.name && (
+                <div style={{ marginTop: 6 }}>
+                  {status.member.name} ({status.member.membership})
+                </div>
+              )}
             </div>
           )}
         </div>
-      )}
-
-      <div style={{ marginTop: 18 }}>
-        <Link href="/" style={{ textDecoration: "underline" }}>
-          ← Home
-        </Link>
       </div>
     </main>
   );

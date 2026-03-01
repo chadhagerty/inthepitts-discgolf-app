@@ -1,171 +1,309 @@
 "use client";
-
 import { useEffect, useMemo, useState } from "react";
 import Link from "next/link";
-
-const DEFAULT_KEYS = [
-  "sponsorsCount",
+type Stats = {
+  roundsPlayed: number;
+  uniquePlayers: number;
+  aces: number;
+  eagles: number;
+  birdies: number;
+  pars: number;
+  bogeys: number;
+  doubleBogeysPlus: number;
+  donationsTotal: number;
+  courseRecord: string;
+};
+const NUM_FIELDS: (keyof Stats)[] = [
   "roundsPlayed",
-  "treesHit",
-  "aceCount",
-  "courseHoles",
-  "coursePar",
+  "uniquePlayers",
+  "aces",
+  "eagles",
+  "birdies",
+  "pars",
+  "bogeys",
+  "doubleBogeysPlus",
+  "donationsTotal",
 ];
-
+const LABELS: Record<keyof Stats, string> = {
+  roundsPlayed: "Rounds played",
+  uniquePlayers: "Unique players",
+  aces: "Aces",
+  eagles: "Eagles",
+  birdies: "Birdies",
+  pars: "Pars",
+  bogeys: "Bogeys",
+  doubleBogeysPlus: "Double+ Bogeys",
+  donationsTotal: "Donations total",
+  courseRecord: "Course record",
+};
+const DEFAULTS: Stats = {
+  roundsPlayed: 0,
+  uniquePlayers: 0,
+  aces: 0,
+  eagles: 0,
+  birdies: 0,
+  pars: 0,
+  bogeys: 0,
+  doubleBogeysPlus: 0,
+  donationsTotal: 0,
+  courseRecord: "",
+};
+function CardWrap({ children }: { children: any }) {
+  return (
+    <div
+      style={{
+        border: "1px solid rgba(255,255,255,0.18)",
+        borderRadius: 16,
+        padding: 14,
+        background: "rgba(0,0,0,0.18)",
+        backdropFilter: "blur(10px)",
+      }}
+    >
+      {children}
+    </div>
+  );
+}
 export default function AdminStatsPage() {
-  const [key, setKey] = useState("");
-  const [overrides, setOverrides] = useState<Record<string, string>>({});
-  const [loading, setLoading] = useState(false);
-
-  const [editKey, setEditKey] = useState("sponsorsCount");
-  const [editValue, setEditValue] = useState("");
-
-  useEffect(() => {
-    const saved = localStorage.getItem("ADMIN_KEY") || "";
-    if (saved) setKey(saved);
-  }, []);
-
-  const sortedKeys = useMemo(() => {
-    const all = new Set([...DEFAULT_KEYS, ...Object.keys(overrides || {})]);
-    return Array.from(all).sort();
-  }, [overrides]);
-
+  const [adminKey, setAdminKey] = useState("");
+  const [stats, setStats] = useState<Stats>(DEFAULTS);
+  const [lastUpdated, setLastUpdated] = useState<string | null>(null);
+  const [loading, setLoading] = useState(true);
+  const [saving, setSaving] = useState(false);
+  const [status, setStatus] = useState<{ ok: boolean; msg: string } | null>(null);
   async function load() {
     setLoading(true);
+    setStatus(null);
     try {
-      const res = await fetch("/api/admin/stats", {
-        headers: { Authorization: `Bearer ${key}` },
-      });
-      const json = await res.json().catch(() => ({}));
-      if (!res.ok) throw new Error(json?.error || "load failed");
-      setOverrides(json?.overrides || {});
-      localStorage.setItem("ADMIN_KEY", key);
+      const res = await fetch("/api/stats", { cache: "no-store" });
+      const data = await res.json().catch(() => ({}));
+      if (!res.ok || !data?.ok) throw new Error(data?.error || "Failed to load stats");
+      setStats({ ...DEFAULTS, ...(data.stats || {}) });
+      setLastUpdated(data.lastUpdated || null);
     } catch (e: any) {
-      alert(e?.message || "load failed");
+      setStatus({ ok: false, msg: e?.message || "Failed to load" });
     } finally {
       setLoading(false);
     }
   }
-
+  useEffect(() => {
+    // remember admin key for phone convenience
+    const saved = localStorage.getItem("ADMIN_KEY") || "";
+    if (saved) setAdminKey(saved);
+    load();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
+  const canSave = useMemo(() => adminKey.trim().length > 0, [adminKey]);
+  function setNum(k: keyof Stats, v: string) {
+    const n = Number(v);
+    setStats((s) => ({ ...s, [k]: Number.isFinite(n) ? n : 0 }));
+  }
   async function save() {
-    if (!editKey.trim()) return;
-    setLoading(true);
+    if (!canSave) return;
+    setSaving(true);
+    setStatus(null);
     try {
-      const res = await fetch("/api/admin/stats", {
+      const payload: any = { ...stats };
+      for (const k of NUM_FIELDS) payload[k] = Number(payload[k]) || 0;
+      const key = adminKey.trim();
+      localStorage.setItem("ADMIN_KEY", key);
+      const res = await fetch("/api/stats", {
         method: "POST",
         headers: {
-          Authorization: `Bearer ${key}`,
           "Content-Type": "application/json",
+          Authorization: `Bearer ${key}`,
         },
-        body: JSON.stringify({ key: editKey.trim(), value: editValue }),
+        body: JSON.stringify(payload),
       });
-      const json = await res.json().catch(() => ({}));
-      if (!res.ok) throw new Error(json?.error || "save failed");
-      await load();
-      alert("Saved ✅");
+      const data = await res.json().catch(() => ({}));
+      if (!res.ok || !data?.ok) throw new Error(data?.error || "Save failed");
+      setStats({ ...DEFAULTS, ...(data.stats || {}) });
+      setLastUpdated(data.lastUpdated || null);
+      setStatus({ ok: true, msg: "Saved ✅" });
     } catch (e: any) {
-      alert(e?.message || "save failed");
+      setStatus({ ok: false, msg: e?.message || "Save failed" });
     } finally {
-      setLoading(false);
+      setSaving(false);
     }
   }
-
+  const prettyUpdated = lastUpdated ? new Date(lastUpdated).toLocaleString() : null;
   return (
-    <main style={{ padding: "2rem", maxWidth: 900, margin: "0 auto" }}>
-      <h1>Admin: Stats</h1>
-
-      <div style={{ marginTop: 10, display: "flex", gap: 12, flexWrap: "wrap" }}>
-        <Link href="/admin/members" style={{ textDecoration: "underline" }}>
-          Members
-        </Link>
-        <Link href="/admin/checkins" style={{ textDecoration: "underline" }}>
-          Check-ins
-        </Link>
-        <Link href="/stats" style={{ textDecoration: "underline" }}>
-          Public Stats
-        </Link>
-        <Link href="/" style={{ textDecoration: "underline" }}>
-          Home
-        </Link>
-      </div>
-
-      <div style={{ marginTop: 16 }}>
-        <label style={{ display: "block", marginBottom: 6, fontWeight: 800 }}>
-          Admin Key
-        </label>
-        <input
-          value={key}
-          onChange={(e) => setKey(e.target.value)}
-          placeholder="chad-super-secret-2026-01"
-          style={{ padding: "0.5rem", width: "100%", maxWidth: 420 }}
-        />
-        <div style={{ marginTop: 10, display: "flex", gap: 10, flexWrap: "wrap" }}>
-          <button onClick={load} disabled={loading || !key.trim()}>
-            {loading ? "Loading..." : "Load overrides"}
-          </button>
+    <main
+      style={{
+        minHeight: "100vh",
+        padding: 24,
+        background:
+          "radial-gradient(1200px 600px at 20% 0%, rgba(34,197,94,0.45), rgba(0,0,0,0.2)), linear-gradient(180deg, #064e3b 0%, #052e23 45%, #031b14 100%)",
+        color: "#fff",
+      }}
+    >
+      <div style={{ maxWidth: 900, margin: "0 auto" }}>
+        <div style={{ display: "flex", justifyContent: "space-between", gap: 12, flexWrap: "wrap" }}>
+          <div style={{ display: "flex", alignItems: "center", gap: 12, flexWrap: "wrap" }}>
+            <img
+              src="/logo.png"
+              alt="In The Pitts"
+              width={56}
+              height={56}
+              style={{ borderRadius: 14, border: "1px solid rgba(255,255,255,0.25)" }}
+              draggable={false}
+            />
+            <div>
+              <h1 style={{ margin: 0 }}>Admin: Stats</h1>
+              <div style={{ marginTop: 4, opacity: 0.9, fontWeight: 700 }}>
+                Edits update <b>/stats</b>. {prettyUpdated ? <span>(Last updated: {prettyUpdated})</span> : null}
+              </div>
+            </div>
+          </div>
+          <div style={{ display: "flex", gap: 12, flexWrap: "wrap", alignItems: "center" }}>
+            <Link href="/admin" style={{ textDecoration: "underline", fontWeight: 900, color: "#fff" }}>
+              ← Admin HQ
+            </Link>
+            <Link href="/stats" style={{ textDecoration: "underline", fontWeight: 900, color: "#fff" }}>
+              View /stats →
+            </Link>
+          </div>
         </div>
-      </div>
+        <div style={{ marginTop: 14 }}>
+          <CardWrap>
+            <label style={{ fontWeight: 900, display: "block", marginBottom: 6 }}>
+              Admin key (required to save)
+            </label>
+           <input
+  type="text"
+  value={adminKey}
+  onChange={(e) => setAdminKey(e.target.value)}
+  placeholder="Paste ADMIN_KEY"
+  autoComplete="new-password"
+  name="nope"
+  spellCheck={false}
+/>
 
-      <div style={{ marginTop: 18, border: "1px solid #e5e5e5", borderRadius: 14, padding: 14 }}>
-        <h2 style={{ marginTop: 0 }}>Edit a stat</h2>
 
-        <div style={{ display: "grid", gap: 10, maxWidth: 520 }}>
-          <label style={{ fontWeight: 800 }}>Key</label>
-          <select
-            value={editKey}
-            onChange={(e) => {
-              const k = e.target.value;
-              setEditKey(k);
-              setEditValue(overrides?.[k] ?? "");
-            }}
-            style={{ padding: 10, borderRadius: 10 }}
-          >
-            {sortedKeys.map((k) => (
-              <option key={k} value={k}>
-                {k}
-              </option>
-            ))}
-          </select>
-
-          <label style={{ fontWeight: 800 }}>Value</label>
-          <input
-            value={editValue}
-            onChange={(e) => setEditValue(e.target.value)}
-            placeholder="number (ex: 12)"
-            style={{ padding: 10, borderRadius: 10 }}
-          />
-
-          <button onClick={save} disabled={loading || !key.trim()}>
-            {loading ? "Saving..." : "Save"}
-          </button>
-        </div>
-      </div>
-
-      <div style={{ marginTop: 18 }}>
-        <h2>Current overrides</h2>
-        {Object.keys(overrides || {}).length === 0 ? (
-          <p style={{ opacity: 0.7 }}>None yet.</p>
-        ) : (
-          <div style={{ display: "grid", gap: 10 }}>
-            {Object.entries(overrides).map(([k, v]) => (
-              <div
-                key={k}
+            <div style={{ display: "flex", gap: 10, marginTop: 12, flexWrap: "wrap" }}>
+              <button
+                onClick={save}
+                disabled={!canSave || saving}
                 style={{
-                  border: "1px solid #eee",
+                  padding: "10px 12px",
                   borderRadius: 12,
-                  padding: 12,
-                  display: "flex",
-                  justifyContent: "space-between",
-                  gap: 12,
+                  border: "1px solid rgba(255,255,255,0.25)",
+                  background: !canSave || saving ? "rgba(255,255,255,0.15)" : "rgba(0,0,0,0.35)",
+                  color: "#fff",
+                  fontWeight: 900,
+                  cursor: !canSave || saving ? "default" : "pointer",
                 }}
               >
-                <div style={{ fontWeight: 900 }}>{k}</div>
-                <div style={{ fontWeight: 900 }}>{v}</div>
+                {saving ? "Saving..." : "Save"}
+              </button>
+              <button
+                onClick={load}
+                disabled={loading}
+                style={{
+                  padding: "10px 12px",
+                  borderRadius: 12,
+                  border: "1px solid rgba(255,255,255,0.25)",
+                  background: "rgba(255,255,255,0.10)",
+                  color: "#fff",
+                  fontWeight: 900,
+                  cursor: loading ? "default" : "pointer",
+                }}
+              >
+                {loading ? "Loading..." : "Reload"}
+              </button>
+            </div>
+            {status && (
+              <div
+                style={{
+                  marginTop: 12,
+                  padding: 12,
+                  borderRadius: 12,
+                  border: "1px solid rgba(255,255,255,0.18)",
+                  background: status.ok ? "rgba(34,197,94,0.22)" : "rgba(239,68,68,0.22)",
+                  color: "#fff",
+                  fontWeight: 900,
+                }}
+              >
+                {status.msg}
               </div>
-            ))}
-          </div>
+            )}
+          </CardWrap>
+        </div>
+        {loading ? (
+          <p style={{ marginTop: 14, opacity: 0.85, fontWeight: 800 }}>Loading…</p>
+        ) : (
+          <>
+            <h2 style={{ marginTop: 18, marginBottom: 10 }}>Course</h2>
+            <div style={{ display: "grid", gap: 12, gridTemplateColumns: "repeat(auto-fit, minmax(240px, 1fr))" }}>
+              {NUM_FIELDS.filter((k) => k !== "donationsTotal").map((k) => (
+                <CardWrap key={k as string}>
+                  <div style={{ fontWeight: 900, marginBottom: 8 }}>{LABELS[k]}</div>
+                  <input
+                    value={String(stats[k] ?? 0)}
+                    onChange={(e) => setNum(k, e.target.value)}
+                    inputMode="numeric"
+                    style={{
+                      width: "100%",
+                      padding: 12,
+                      borderRadius: 12,
+                      border: "1px solid rgba(255,255,255,0.25)",
+                      background: "rgba(255,255,255,0.08)",
+                      color: "#fff",
+                      outline: "none",
+                      fontWeight: 900,
+                    }}
+                  />
+                </CardWrap>
+              ))}
+            </div>
+            <h2 style={{ marginTop: 22, marginBottom: 10 }}>Extras</h2>
+            <div style={{ display: "grid", gap: 12, gridTemplateColumns: "repeat(auto-fit, minmax(240px, 1fr))" }}>
+              <CardWrap>
+                <div style={{ fontWeight: 900, marginBottom: 8 }}>{LABELS.donationsTotal}</div>
+                <input
+                  value={String(stats.donationsTotal ?? 0)}
+                  onChange={(e) => setNum("donationsTotal", e.target.value)}
+                  inputMode="numeric"
+                  style={{
+                    width: "100%",
+                    padding: 12,
+                    borderRadius: 12,
+                    border: "1px solid rgba(255,255,255,0.25)",
+                    background: "rgba(255,255,255,0.08)",
+                    color: "#fff",
+                    outline: "none",
+                    fontWeight: 900,
+                  }}
+                />
+              </CardWrap>
+              <CardWrap>
+                <div style={{ fontWeight: 900, marginBottom: 8 }}>{LABELS.courseRecord}</div>
+                <input
+                  value={stats.courseRecord ?? ""}
+                  onChange={(e) => setStats((s) => ({ ...s, courseRecord: e.target.value }))}
+                  placeholder="e.g. -12 (Chad, 2026-03-01)"
+                  style={{
+                    width: "100%",
+                    padding: 12,
+                    borderRadius: 12,
+                    border: "1px solid rgba(255,255,255,0.25)",
+                    background: "rgba(255,255,255,0.08)",
+                    color: "#fff",
+                    outline: "none",
+                    fontWeight: 800,
+                  }}
+                />
+                <div style={{ marginTop: 8, opacity: 0.85, fontWeight: 700, fontSize: 13 }}>
+                  Tip: use any format you want — it’s just text.
+                </div>
+              </CardWrap>
+            </div>
+            <div style={{ marginTop: 18, opacity: 0.9, fontWeight: 800, fontSize: 13 }}>
+              Next: we’ll add <b>player-submitted</b> aces/birdies/etc (with admin approval) so it’s A&B like you want.
+            </div>
+          </>
         )}
       </div>
     </main>
   );
 }
+

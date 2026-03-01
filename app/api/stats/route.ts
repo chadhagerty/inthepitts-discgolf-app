@@ -9,8 +9,8 @@ function requireAdmin(req: Request) {
   return !!adminKey && token === adminKey;
 }
 
+// ✅ ONLY the keys you said you want
 const DEFAULTS: Record<string, string> = {
-  // Feel free to add keys later without migrations
   roundsPlayed: "0",
   uniquePlayers: "0",
   aces: "0",
@@ -19,11 +19,21 @@ const DEFAULTS: Record<string, string> = {
   pars: "0",
   bogeys: "0",
   doubleBogeysPlus: "0",
-  // examples you may want:
   donationsTotal: "0",
   courseRecord: "",
-  notes: "",
 };
+
+const NUMBER_KEYS = new Set([
+  "roundsPlayed",
+  "uniquePlayers",
+  "aces",
+  "eagles",
+  "birdies",
+  "pars",
+  "bogeys",
+  "doubleBogeysPlus",
+  "donationsTotal",
+]);
 
 async function getAllStats(prisma: any) {
   const rows = await prisma.statsOverride.findMany({
@@ -32,25 +42,19 @@ async function getAllStats(prisma: any) {
 
   const stats: Record<string, any> = { ...DEFAULTS };
 
-  for (const r of rows) stats[r.key] = r.value;
-
-  // cast numeric-ish fields
-  const numberKeys = [
-    "roundsPlayed",
-    "uniquePlayers",
-    "aces",
-    "eagles",
-    "birdies",
-    "pars",
-    "bogeys",
-    "doubleBogeysPlus",
-    "donationsTotal",
-  ];
-  for (const k of numberKeys) {
-    if (stats[k] !== undefined && stats[k] !== "") stats[k] = Number(stats[k]) || 0;
+  for (const r of rows) {
+    // ignore old keys you no longer want
+    if (stats[r.key] !== undefined) stats[r.key] = r.value;
   }
 
-  // last updated = newest updatedAt in table (if any)
+  // cast numeric-ish fields
+  for (const k of Object.keys(stats)) {
+    if (NUMBER_KEYS.has(k)) {
+      const v = stats[k];
+      stats[k] = v === "" || v === null || v === undefined ? 0 : Number(v) || 0;
+    }
+  }
+
   const lastUpdated =
     rows.length > 0
       ? rows.reduce((m: any, r: any) => (!m || r.updatedAt > m ? r.updatedAt : m), null)
@@ -69,7 +73,6 @@ export async function GET() {
   }
 }
 
-// Admin-only upsert of any keys you send
 export async function POST(req: Request) {
   try {
     if (!requireAdmin(req)) {
@@ -83,7 +86,6 @@ export async function POST(req: Request) {
 
     const prisma = getPrisma();
 
-    // Allow only these keys (prevents junk writes)
     const allowedKeys = new Set(Object.keys(DEFAULTS));
     const entries = Object.entries(body).filter(([k]) => allowedKeys.has(k));
 

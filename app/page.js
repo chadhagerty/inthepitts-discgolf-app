@@ -4,7 +4,7 @@ import Link from "next/link";
 export const dynamic = "force-dynamic";
 
 const tiles = [
-  { type: "internal", href: "/checkin", icon: "/tile-icons/checkin.png", label: "Course Check-In" },
+  { type: "internal", href: "/checkin", icon: "/tile-icons/checkin.png", label: "Tap In" },
   { type: "internal", href: "/memberships", icon: "/tile-icons/membership.png", label: "Membership" },
   { type: "internal", href: "/events", icon: "/tile-icons/events.png", label: "Events" },
   { type: "internal", href: "/chat", icon: "/tile-icons/chat.png", label: "Chat" },
@@ -16,28 +16,24 @@ const tiles = [
 
   { type: "external", href: "https://www.youtube.com/@InThePittsDiscGolfCourse", icon: "/tile-icons/youtube.png", label: "YouTube" },
   { type: "external", href: "https://www.facebook.com/share/1D8MpvLLtv/", icon: "/tile-icons/facebook.png", label: "Facebook" },
-  { type: "internal", href: "/dgv", icon: "/tile-icons/dgv.png", label: "Disc Golf Valley" },
+
+  // REPLACE Disc Golf Valley tile with About (you asked for this)
+  { type: "internal", href: "/about", icon: "/tile-icons/course-info.png", label: "About" },
+
   { type: "internal", href: "/the-game", icon: "/tile-icons/ITP_Game.png", label: "In The Pitts - The Game" },
 ];
-
-function safeId(label) {
-  return label.toLowerCase().replace(/[^a-z0-9]+/g, "-");
-}
 
 function Tile({ t }) {
   const content = (
     <div className="tileFrame">
       <Image
-  src={t.icon}
-  alt={t.label}
-  fill
-  sizes="160px"
-  priority={t.href === "/stats"} // optional: only if you want to prioritize one tile
-  draggable={false}
-  className="tileImg"
-/>
-
-
+        src={t.icon}
+        alt={t.label}
+        fill
+        sizes="160px"
+        draggable={false}
+        className="tileImg"
+      />
     </div>
   );
 
@@ -62,9 +58,6 @@ function Tile({ t }) {
   );
 }
 
-
-
-
 export default function Page() {
   return (
     <main className="homePage">
@@ -72,29 +65,22 @@ export default function Page() {
         <Image
           src="/logo.png"
           alt="In The Pitts Disc Golf"
-          width={240}
-          height={240}
+          width={300}
+          height={300}
           priority
           className="homeLogo"
         />
 
-        <p className="homeDesc">
-          A well rounded 18 hole course with both wooded and open holes. Great for the beginner or seasoned vet,
-          features some short forest holes and some long bombers. Say hello to the friendly donkey at hole 6 tee pad.
+        <p className="homeDesc" style={{ marginTop: 10, fontWeight: 800 }}>
+          18-hole course • wooded + open
         </p>
-
-        <Link href="/course" className="homeBtnLink">
-          <button className="homeBtn">Hole Layout</button>
-        </Link>
       </section>
 
       <section className="homeGridWrap">
         <div className="tileGrid">
           {tiles.map((t) => (
-  <Tile key={`${t.type}-${t.href}-${t.icon}`} t={t} />
-
-))}
-
+            <Tile key={`${t.type}-${t.href}-${t.icon}`} t={t} />
+          ))}
         </div>
       </section>
     </main>

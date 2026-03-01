@@ -27,6 +27,6 @@
     "**/*.mts",
     "**/*.ts",
     "**/*.tsx"
-  ],
+, "app/api/members/[id]/route.js"  ],
   "exclude": ["node_modules"]
 }
