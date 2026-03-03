@@ -46,6 +46,8 @@ export default function AdminHome() {
         <AdminCardLink href="/admin/checkins" label="Check-ins" sub="View recent check-ins" />
         <AdminCardLink href="/admin/members" label="Members" sub="View + edit members" />
         <AdminCardLink href="/admin/reviews" label="Reviews" sub="Reply to reviews + delete spam" />
+        <AdminCardLink href="/admin/leaderboard" label="Leaderboard" sub="View + edit leaderboard" />
+        <AdminCardLink href="/admin/chat" label="Chat" sub="Clear messages + keep it course-friendly" />
       </div>
 
       <div style={{ marginTop: 14, color: "rgba(234,255,242,0.72)", fontWeight: 700 }}>

@@ -71,3 +71,19 @@ model StatsOverride {
   value     String
   updatedAt DateTime @updatedAt
 }
+
+
+model LeaderboardEntry {
+  id        String   @id @default(cuid())
+  name      String
+  tee       String   // "red" | "blue"
+  score     Int
+  strokes   Int
+  aces      Int      @default(0)
+  date      DateTime @default(now())
+  notes     String?
+  createdAt DateTime @default(now())
+}
+
+
+
