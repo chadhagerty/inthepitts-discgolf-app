@@ -291,9 +291,7 @@ export default function ReviewPage() {
         )}
 
         <div className="itp-footerRow">
-          <Link href="/admin/reviews" className="itp-link">
-            Admin: Manage Reviews →
-          </Link>
+          
         </div>
       </div>
     </main>

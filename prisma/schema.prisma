@@ -2,9 +2,11 @@ generator client {
   provider = "prisma-client-js"
 }
 
+
 datasource db {
   provider = "postgresql"
 }
+
 
 model Member {
   id               String    @id @default(uuid())
@@ -15,17 +17,20 @@ model Member {
   createdAt        DateTime  @default(now())
   checkIns         CheckIn[]
 
+
   stripeCustomerId String?   @unique
 }
 
+
 model CheckIn {
-  id              String   @id @default(uuid())
+  id              String    @id @default(uuid())
   memberId        String?
-  member          Member?  @relation(fields: [memberId], references: [id])
-  createdAt       DateTime @default(now())
-  source          String   // "manual" | "qr" | "stripe"
-  stripeSessionId String?  @unique
+  member          Member?   @relation(fields: [memberId], references: [id])
+  createdAt       DateTime  @default(now())
+  source          String    // "manual" | "qr" | "stripe"
+  stripeSessionId String?   @unique
 }
+
 
 model ChatMessage {
   id        String   @id @default(uuid())
@@ -33,20 +38,22 @@ model ChatMessage {
   message   String
   createdAt DateTime @default(now())
 
+
   @@index([createdAt])
 }
+
 
 model Review {
   id            String   @id @default(uuid())
   createdAt     DateTime @default(now())
   updatedAt     DateTime @updatedAt
 
-  // one review per email
+
   email         String   @unique
   name          String
   text          String
 
-  // rating categories (1–5)
+
   overall       Int
   upkeep        Int
   shotSelection Int
@@ -54,17 +61,19 @@ model Review {
   app           Int
   game          Int
 
-  // admin response (public)
+
   ownerResponse String?
   respondedAt   DateTime?
 
-  // moderation
+
   isDeleted     Boolean  @default(false)
   deletedAt     DateTime?
+
 
   @@index([createdAt])
   @@index([isDeleted, createdAt])
 }
+
 
 model StatsOverride {
   key       String   @id
@@ -76,8 +85,10 @@ model StatsOverride {
 model LeaderboardEntry {
   id        String   @id @default(cuid())
   name      String
+  layout    String?
   tee       String   // "red" | "blue"
   score     Int
+  holes     Int      @default(12)
   strokes   Int
   aces      Int      @default(0)
   date      DateTime @default(now())
@@ -86,4 +97,36 @@ model LeaderboardEntry {
 }
 
 
+model Event {
+  id             String      @id @default(cuid())
+  title          String
+  date           DateTime
+  type           String      // "tournament" | "league" | "special" | "community"
+  layout         String      // "red-12" | "blue-12" | "red-18" | "blue-18"
+  description    String?
+  paymentType    String      @default("free") // "free" | "cash" | "etransfer" | "stripe"
+  price          Int         @default(0) // store whole dollars for now
+  paymentNotes   String?
+  isActive       Boolean     @default(true)
+  createdAt      DateTime    @default(now())
+  updatedAt      DateTime    @updatedAt
+  joins          EventJoin[]
 
+
+  @@index([date])
+  @@index([isActive, date])
+}
+
+
+model EventJoin {
+  id             String   @id @default(cuid())
+  eventId        String
+  event          Event    @relation(fields: [eventId], references: [id], onDelete: Cascade)
+  name           String
+  division       String
+  paymentStatus  String   @default("not_required") // "not_required" | "pending" | "paid"
+  createdAt      DateTime @default(now())
+
+
+  @@index([eventId, createdAt])
+}

@@ -1,21 +1,35 @@
-"use client"
+
+
+"use client";
+
 
 import Link from "next/link";
 
+
 export const dynamic = "force-dynamic";
+
 
 export default function AboutPage() {
   return (
-    <main className="itp-page" style={{ position: "relative" , overflow: "hidden" }}>
-        <style jsx>{`
-  main::before {
-    opacity: 0.03 !important;
-    background-position: 50% 10%;
-  }
-`}</style>
+    <main className="itp-page" style={{ position: "relative", overflow: "hidden" }}>
+      <style jsx>{`
+        main::before {
+          opacity: 0.03 !important;
+          background-position: 50% 10%;
+        }
+      `}</style>
+
 
       <div className="itp-card itp-cardWide">
-        {/* HERO (big centered logo + tagline) */}
+        <div className="itp-headerRow">
+          <div />
+          <Link href="/" className="itp-link">
+            ← Home
+          </Link>
+        </div>
+
+
+        {/* HERO */}
         <div
           style={{
             textAlign: "center",
@@ -35,6 +49,7 @@ export default function AboutPage() {
             }}
           />
 
+
           <div
             style={{
               marginTop: 10,
@@ -48,14 +63,17 @@ export default function AboutPage() {
           </div>
         </div>
 
+
         {/* ABOUT COURSE */}
         <div className="itp-panel">
           <h3 className="itp-sectionTitle">Course Info</h3>
+
 
           <p style={{ marginTop: 0 }}>
             In The Pitts Disc Golf began as a real course experience with drone
             videos at every tee pad, accessible by QR code.
           </p>
+
 
           <p>
             It grew into the In The Pitts App, and now into{" "}
@@ -63,39 +81,26 @@ export default function AboutPage() {
             with fun easter-eggs (yes… Hole 6 donkey is canon 😄).
           </p>
 
+
           <p style={{ marginBottom: 0 }}>
             Located in Ontario, Canada, the course mixes tight wooded lines with
             open bomber holes so beginners and pros both have fun.
           </p>
         </div>
 
+
         {/* HOLE LAYOUT */}
         <div className="itp-panel">
           <h3 className="itp-sectionTitle">Hole Layout</h3>
+
 
           <p style={{ marginTop: 0 }}>
             View hole maps, distances, OB, mandos, and sponsors.
           </p>
 
+
           <Link href="/course" className="itp-link">
             👉 View Hole Layout
-          </Link>
-        </div>
-
-        {/* FUTURE EDITABLE HOLES */}
-        <div className="itp-panel">
-          <h3 className="itp-sectionTitle">Hole Notes (coming soon)</h3>
-
-          <p style={{ margin: 0 }}>
-            We’ll add editable notes for each hole so you can update tips,
-            sponsor shoutouts, and drone video links from your phone.
-          </p>
-        </div>
-
-        {/* FOOTER */}
-        <div className="itp-footerRow">
-          <Link href="/" className="itp-link">
-            ← Home
           </Link>
         </div>
       </div>
